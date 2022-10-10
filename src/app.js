@@ -6,9 +6,9 @@ const app = express();
 // Import routes
 import puestosRoutes from "./routes/puestos.routes.js";
 
-/*// Middlewares
+// Middlewares
 app.use(morgan("dev"));
-app.use(express.json());*/
+app.use(express.json());
 
 // Routes
 app.use("/api/puesto", puestosRoutes);
