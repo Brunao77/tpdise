@@ -4,13 +4,13 @@ import morgan from "morgan";
 const app = express();
 
 // Import routes
-import puestosRoutes from "./routes/puestos.routes.js";
+import puestoRoutes from "./routes/puesto.routes.js";
 
 // Middlewares
 app.use(morgan("dev"));
 app.use(express.json());
 
 // Routes
-app.use("/api/puesto", puestosRoutes);
+app.use("/api/puesto", puestoRoutes);
 
 export default app;

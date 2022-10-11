@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { postPuesto } from "../controllers/puesto.controller.js";
 const router = Router();
 
 router.get("/", () => {
-  console.log("get puestos");
+  console.log("get competencia");
 });
+
 router.post("/", postPuesto);
+
 router.delete("/", () => {
-  console.log("delete puestos");
+  console.log("delete competencia");
 });
 
 export default router;
