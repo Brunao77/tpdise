@@ -18,7 +18,7 @@ export async function postPuesto(req, res) {
           ponderacion: competencia.ponderacion,
         });
       } catch (error) {
-        return res.status(404).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
       }
     });
     res.json(newPuesto);
