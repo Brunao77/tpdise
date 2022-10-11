@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { postCompetencia } from "../controllers/competencia.controller.js";
+import {
+  postCompetencia,
+  getCompetencias,
+} from "../controllers/competencia.controller.js";
 
 const router = Router();
 
-router.get("/", () => {
-  console.log("get competencia");
-});
+router.get("/", getCompetencias);
 
 router.post("/", postCompetencia);
 
