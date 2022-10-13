@@ -10,7 +10,7 @@ export async function postPuesto(req, res) {
       descripcion,
       empresa,
     });
-    const puesto_competencia = competencias.map(async (competencia) => {
+    competencias.map(async (competencia) => {
       try {
         return await Puesto_Competencia.create({
           puestoCodigo: codigo,

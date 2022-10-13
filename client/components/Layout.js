@@ -18,10 +18,12 @@ const Layout = ({ children, title }) => {
           }
           main {
             display: flex;
+            flex-direction: column;
             background: ${colors.white};
             margin: 10px 0 10px 0;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            padding: 20px;
             height: 88vh;
           }
           h3 {

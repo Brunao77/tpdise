@@ -1,24 +1,24 @@
+import Link from "next/link";
 import { colors } from "../styles";
 
-const Button = ({ children, onClick, bgcolor }) => {
+const ButtonLink = ({ children, href, bgcolor }) => {
   return (
     <>
-      <button onClick={onClick}>{children}</button>
+      <Link href={href}>
+        <a>{children}</a>
+      </Link>
       <style jsx>{`
-        button {
-          display: flex;
-          align-items: center;
+        a {
           background: ${bgcolor};
           padding: 20px;
           border-radius: 10px;
+          text-decoration: none;
           color: ${colors.black};
           font-size: 20px;
           font-weight: 600;
           transition: 0.2s;
-          border: none;
-          cursor: pointer;
         }
-        button:active {
+        a:active {
           transform: scale(97%);
         }
       `}</style>
@@ -26,4 +26,4 @@ const Button = ({ children, onClick, bgcolor }) => {
   );
 };
 
-export default Button;
+export default ButtonLink;
