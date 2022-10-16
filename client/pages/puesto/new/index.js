@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../../components/Layout";
 import { colors } from "../../../styles";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import ButtonLink from "../../../components/ButtonLink";
+import Select from "react-select";
 
-const newPuesto = () => {
+const newPuesto = ({ competencias }) => {
   const [form, setForm] = useState({
     codigo: "",
     nombre: "",
     empresa: "",
     caracteristica: [],
   });
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() => {
+    setSearchTerm();
+  }, []);
 
   const addCharasterict = () => {
     setForm({
@@ -24,12 +30,13 @@ const newPuesto = () => {
   };
 
   const handleEliminar = (index) => {
-    const temp = [...form["caracteristica"]];
-    temp.splice(index, 1);
-    setForm({
+    const tmp = form["caracteristica"];
+    tmp.splice(index, 1);
+    console.log({ tmp });
+    setForm((form) => ({
       ...form,
-      ["caracteristica"]: temp,
-    });
+      ["caracteristica"]: [...tmp],
+    }));
   };
 
   const handleChange = (e) => {
@@ -39,7 +46,18 @@ const newPuesto = () => {
       [name]: value,
     });
   };
+  const handleChangeChar = (e, index) => {
+    const { value, name } = e.target;
 
+    const tmp = form["caracteristica"];
+    name === "competencia"
+      ? (tmp[index].competencia = value)
+      : (tmp[index].puntos = value);
+    setForm((form) => ({
+      ...form,
+      ["caracteristica"]: tmp,
+    }));
+  };
   console.log(form);
   return (
     <>
@@ -74,11 +92,28 @@ const newPuesto = () => {
               </button>
             </div>
             <div className="characts">
-              {form["caracteristica"].map((competencia, index) => {
+              {form["caracteristica"].map((caracteristica, index) => {
                 return (
                   <section key={index} className="new-characts">
-                    <Input placeholder="Competencia" />
-                    <Input placeholder="Puntos" />
+                    <div className="comp-search">
+                      <Input
+                        placeholder="Competencia"
+                        name="competencia"
+                        value={caracteristica.competencia}
+                        onChange={(e) => {
+                          handleChangeChar(e, index);
+                          setSearchTerm(e.target.value);
+                        }}
+                      />
+                    </div>
+                    <Input
+                      name="puntos"
+                      placeholder="Puntos"
+                      value={caracteristica.puntos}
+                      onChange={(e) => {
+                        handleChangeChar(e, index);
+                      }}
+                    />
                     <Button
                       bgcolor={colors.secondary}
                       onClick={() => handleEliminar(index)}
@@ -99,6 +134,18 @@ const newPuesto = () => {
         </div>
       </Layout>
       <style jsx>{`
+        .comp-search {
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          height: 10vh;
+        }
+        .search-term {
+          overflow: auto;
+          position: absolute;
+          z-index: 1000;
+          top: 100%;
+        }
         .sup {
           width: 100%;
           height: 100%;
@@ -166,3 +213,13 @@ const newPuesto = () => {
 };
 
 export default newPuesto;
+
+export async function getStaticProps() {
+  const res = await fetch("http://localhost:3000/api/competencia");
+  const competencias = await res.json();
+  return {
+    props: {
+      competencias,
+    },
+  };
+}
