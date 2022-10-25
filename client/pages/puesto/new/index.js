@@ -4,7 +4,6 @@ import { colors } from "../../../styles";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import ButtonLink from "../../../components/ButtonLink";
-import Select from "react-select";
 
 const newPuesto = ({ competencias }) => {
   const [form, setForm] = useState({
@@ -14,6 +13,7 @@ const newPuesto = ({ competencias }) => {
     caracteristica: [],
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setSearchTerm();
@@ -24,7 +24,7 @@ const newPuesto = ({ competencias }) => {
       ...form,
       ["caracteristica"]: [
         ...form["caracteristica"],
-        { competencia: "", puntos: "", isAdded: false },
+        { competencia: "", puntos: "", err: { competencia: "", puntos: "" } },
       ],
     });
   };
@@ -32,7 +32,6 @@ const newPuesto = ({ competencias }) => {
   const handleEliminar = (index) => {
     const tmp = form["caracteristica"];
     tmp.splice(index, 1);
-    console.log({ tmp });
     setForm((form) => ({
       ...form,
       ["caracteristica"]: [...tmp],
@@ -43,9 +42,10 @@ const newPuesto = ({ competencias }) => {
     const { value, name } = e.target;
     setForm({
       ...form,
-      [name]: value,
+      [name]: value.toUpperCase(),
     });
   };
+
   const handleChangeChar = (e, index) => {
     const { value, name } = e.target;
 
@@ -58,7 +58,54 @@ const newPuesto = ({ competencias }) => {
       ["caracteristica"]: tmp,
     }));
   };
-  console.log(form);
+
+  const formValidate = () => {
+    let err = {};
+
+    if (!form.codigo) err.codigo = "Código es requerido";
+
+    if (form.codigo.length > 20)
+      err.codigo = "Código tener menos de 20 carácteres";
+
+    if (!form.nombre) err.nombre = "Nombre es requerido";
+
+    if (form.nombre.length > 50)
+      err.nombre = "Nombre tener menos de 50 carácteres";
+
+    if (!form.empresa) err.empresa = "Empresa es requerido";
+
+    if (form.empresa.length > 50)
+      err.empresa = "Empresa tener menos de 50 carácteres";
+
+    const tmp = form["caracteristica"];
+
+    tmp.map((caracteristica) => {
+      caracteristica.err.competencia = "";
+      caracteristica.err.puntos = "";
+      if (!caracteristica.competencia)
+        caracteristica.err.competencia = "Competencia es requerido";
+
+      if (caracteristica.competencia.length > 50)
+        caracteristica.err.competencia =
+          "Competencia tener menos de 50 carácteres";
+
+      if (
+        caracteristica.puntos < 0 ||
+        caracteristica.puntos > 10 ||
+        !caracteristica.puntos
+      )
+        caracteristica.err.puntos = "Puntos debe estar entre 0 y 10";
+    });
+
+    setForm((form) => ({
+      ...form,
+      ["caracteristica"]: tmp,
+    }));
+
+    setErrors(err);
+    return err;
+  };
+
   return (
     <>
       <Layout title="NUEVO PUESTO">
@@ -70,18 +117,21 @@ const newPuesto = ({ competencias }) => {
               name="codigo"
               value={form.codigo}
               onChange={handleChange}
+              err={errors.codigo}
             />
             <Input
               placeholder="Nombre"
               name="nombre"
               value={form.nombre}
               onChange={handleChange}
+              err={errors.nombre}
             />
             <Input
               placeholder="Empresa"
               name="empresa"
               value={form.empresa}
               onChange={handleChange}
+              err={errors.empresa}
             />
           </section>
           <section className="characts-container">
@@ -95,20 +145,25 @@ const newPuesto = ({ competencias }) => {
               {form["caracteristica"].map((caracteristica, index) => {
                 return (
                   <section key={index} className="new-characts">
-                    <div className="comp-search">
-                      <Input
-                        placeholder="Competencia"
-                        name="competencia"
-                        value={caracteristica.competencia}
-                        onChange={(e) => {
-                          handleChangeChar(e, index);
-                          setSearchTerm(e.target.value);
-                        }}
-                      />
-                    </div>
                     <Input
+                      placeholder="Competencia"
+                      name="competencia"
+                      value={caracteristica.competencia}
+                      onChange={(e) => {
+                        handleChangeChar(e, index);
+
+                        e.target.value.length >= 3
+                          ? setSearchTerm(e.target.value)
+                          : setSearchTerm(undefined);
+                      }}
+                      err={caracteristica.err.competencia}
+                    />
+                    <input
+                      type="number"
                       name="puntos"
                       placeholder="Puntos"
+                      min="0"
+                      max="10"
                       value={caracteristica.puntos}
                       onChange={(e) => {
                         handleChangeChar(e, index);
@@ -130,10 +185,20 @@ const newPuesto = ({ competencias }) => {
           <ButtonLink bgcolor={colors.secondary} href="/puesto">
             CANCELAR
           </ButtonLink>
-          <Button bgcolor={colors.primary}>ACEPTAR</Button>
+          <Button bgcolor={colors.primary} onClick={formValidate}>
+            ACEPTAR
+          </Button>
         </div>
       </Layout>
       <style jsx>{`
+        input {
+          border-radius: 10px;
+          outline: none;
+          padding: 5px;
+          font-weight: 600;
+          width: 30vh;
+          border: 1px solid ${colors.black};
+        }
         .comp-search {
           display: flex;
           flex-direction: column;
@@ -183,6 +248,7 @@ const newPuesto = ({ competencias }) => {
         }
         .characts {
           margin-top: 10px;
+          height: 100%;
           max-height: 40vh;
           display: flex;
           flex-direction: column;

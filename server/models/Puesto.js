@@ -1,5 +1,6 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes } from "sequelize";
+import { Puesto_Competencia } from "./Puesto_Competencia.js";
 
 export const Puesto = sequelize.define("puesto", {
   codigo: {
@@ -16,3 +17,4 @@ export const Puesto = sequelize.define("puesto", {
     type: DataTypes.STRING,
   },
 });
+Puesto.hasMany(Puesto_Competencia);

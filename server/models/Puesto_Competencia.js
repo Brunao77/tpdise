@@ -6,6 +6,6 @@ import { Competencia } from "./Competencia.js";
 export const Puesto_Competencia = sequelize.define("puesto_competencia", {
   ponderacion: DataTypes.INTEGER,
 });
-
-Puesto.belongsToMany(Competencia, { through: Puesto_Competencia });
-Competencia.belongsToMany(Puesto, { through: Puesto_Competencia });
+Puesto_Competencia.belongsTo(Competencia);
+//Puesto.belongsToMany(Competencia, { through: Puesto_Competencia });
+//Competencia.belongsToMany(Puesto, { through: Puesto_Competencia });
