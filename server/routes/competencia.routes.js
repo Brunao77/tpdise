@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   postCompetencia,
   getCompetencias,
-} from "../controllers/competencia.controller.js";
+} from "../gestores/gestorCompetencia.js";
 
 const router = Router();
 

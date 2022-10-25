@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { postPuesto } from "../controllers/puesto.controller.js";
+import { postPuesto } from "../gestores/gestorPuesto.js";
 
 const router = Router();
 
