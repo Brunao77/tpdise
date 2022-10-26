@@ -6,7 +6,7 @@ import { sequelize } from "./db/database.js";
 // import "./models/Puesto_Competencia.js";
 
 async function main() {
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
   app.listen(3000);
   console.log("Server on port 3000");
 }
