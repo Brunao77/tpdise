@@ -1,20 +1,12 @@
 import { sequelize } from "../db/database.js";
-import { DataTypes } from "sequelize";
-import { PonderacionDAO } from "./PonderacionDAO.js";
 
-export const PuestoDAO = sequelize.define("puesto", {
-  codigo: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-  },
-  nombre: {
-    type: DataTypes.STRING,
-  },
-  descripcion: {
-    type: DataTypes.STRING,
-  },
-  empresa: {
-    type: DataTypes.STRING,
-  },
-});
-PuestoDAO.hasMany(PonderacionDAO);
+export class PuestoDAO {
+  async guardarPuesto(puesto, ponderaciones) {
+    try {
+      await puesto.save();
+      ponderaciones.map(async (ponderacion) => await ponderacion.save());
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
+}

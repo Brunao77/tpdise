@@ -1,15 +1,10 @@
-import { sequelize } from "../db/database.js";
-import { DataTypes } from "sequelize";
+import { Competencia } from "../models/Competencia.js";
 
-export const CompetenciaDAO = sequelize.define("competencias", {
-  codigo: {
-    type: DataTypes.STRING,
-    primaryKey: true,
-  },
-  nombre: {
-    type: DataTypes.STRING,
-  },
-  descripcion: {
-    type: DataTypes.STRING,
-  },
-});
+export class CompetenciaDAO {
+  async guardarCompetencia(competencia) {
+    return await competencia.save();
+  }
+  async obtenerCompetencias() {
+    return await Competencia.findAll({});
+  }
+}

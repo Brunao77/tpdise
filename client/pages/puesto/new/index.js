@@ -106,6 +106,26 @@ const newPuesto = ({ competencias }) => {
     return err;
   };
 
+  const handleAceptButton = async () => {
+    const err = formValidate();
+
+    if (err) {
+      const { codigo, nombre, descripcion, empresa, caracteristica } = form;
+      const data = {
+        codigo,
+        nombre,
+        descripcion,
+        empresa,
+        competencias: caracteristica,
+      };
+      const response = await fetch("http://localhost:3000/api/puesto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+    }
+  };
+
   return (
     <>
       <Layout title="NUEVO PUESTO">
@@ -185,7 +205,7 @@ const newPuesto = ({ competencias }) => {
           <ButtonLink bgcolor={colors.secondary} href="/puesto">
             CANCELAR
           </ButtonLink>
-          <Button bgcolor={colors.primary} onClick={formValidate}>
+          <Button bgcolor={colors.primary} onClick={handleAceptButton}>
             ACEPTAR
           </Button>
         </div>

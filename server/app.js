@@ -1,7 +1,10 @@
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
 
 const app = express();
+
+app.use(cors());
 
 // Import routes
 import puestoRoutes from "./routes/puesto.routes.js";

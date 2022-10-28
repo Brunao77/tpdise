@@ -1,28 +1,29 @@
-import { PuestoDAO } from "../dao/PuestoDAO.js";
-import { PonderacionDAO } from "../dao/PonderacionDAO.js";
+import { sequelize } from "../db/database.js";
 import { Puesto } from "../models/Puesto.js";
 import { Ponderacion } from "../models/Ponderacion.js";
-import { sequelize } from "../db/database.js";
+import { PuestoDAO } from "../dao/PuestoDAO.js";
 
 export async function postPuesto(req, res) {
   try {
     const { codigo, nombre, descripcion, empresa, competencias } = req.body;
 
-    // Crea instancias de Puesto y Ponderación.
-    const newPuesto = new Puesto(codigo, nombre, descripcion, empresa);
-    const ponderaciones = competencias.map((competencia) => {
-      return new Ponderacion(
-        codigo,
-        competencia.codigo,
-        competencia.ponderacion
-      );
+    const newPuesto = new Puesto({
+      codigo,
+      nombre,
+      descripcion,
+      empresa,
     });
 
-    // Inserta las instancias creadas en la base de datos, en una transacción.
-    await sequelize.transaction(async (t) => {
-      await PuestoDAO.create(newPuesto, { transaction: t });
-      await PonderacionDAO.bulkCreate(ponderaciones, { transaction: t });
+    const ponderaciones = competencias.map((competencia) => {
+      return new Ponderacion({
+        PuestoCodigo: codigo,
+        CompetenciumCodigo: competencia.competencia,
+        ponderacion: competencia.puntos,
+      });
     });
+
+    const puestoDAO = new PuestoDAO();
+    await puestoDAO.guardarPuesto(newPuesto, ponderaciones);
 
     res.json(newPuesto);
   } catch (error) {
