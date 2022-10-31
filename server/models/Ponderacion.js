@@ -6,11 +6,27 @@ export class Ponderacion extends Model {}
 
 Ponderacion.init(
   {
-    ponderacion: DataTypes.INTEGER,
+    ponderacion: {
+      type: DataTypes.STRING,
+    },
+    competenciaCodigo: {
+      type: DataTypes.STRING,
+      primaryKey: true
+    },
+    puestoCodigo: {
+      type: DataTypes.STRING,
+      primaryKey: true,
+    }
   },
   {
     sequelize,
     modelName: "Ponderacion",
+    tableName: "Ponderaciones",
+    name: {
+      singular: "ponderacion",
+      plural: "ponderaciones"
+    }
   }
 );
-Ponderacion.belongsTo(Competencia);
+
+Ponderacion.belongsTo(Competencia, {foreignKey: 'competenciaCodigo'});

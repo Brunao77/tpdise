@@ -23,6 +23,12 @@ Puesto.init(
   {
     sequelize,
     modelName: "Puesto",
+    tableName: "Puestos",
+    name: {
+      singular: "puesto",
+      plural: "puestos"
+    }
   }
 );
-Puesto.hasMany(Ponderacion);
+
+Puesto.Ponderaciones = Puesto.hasMany(Ponderacion, {foreignKey: 'puestoCodigo'});

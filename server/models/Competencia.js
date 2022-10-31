@@ -19,5 +19,10 @@ Competencia.init(
   {
     sequelize,
     modelName: "Competencia",
+    tableName: "Competencias",
+    name: {
+      singular: "competencia",
+      plural: "competencias"
+    }
   }
 );
