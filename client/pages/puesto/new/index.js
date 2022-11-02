@@ -119,7 +119,6 @@ const newPuesto = ({ competencias }) => {
         empresa,
         competencias,
       };
-      console.log(data)
       const response = await fetch("http://localhost:3000/api/puesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
