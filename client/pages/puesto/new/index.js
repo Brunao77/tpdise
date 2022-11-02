@@ -25,7 +25,7 @@ const newPuesto = ({ competencias }) => {
       ...form,
       ["competencias"]: [
         ...form["competencias"],
-        { competencia: "", puntos: "", err: { competencia: "", puntos: "" } },
+        { codigo: "", puntos: "", err: { competencia: "", puntos: "" } },
       ],
     });
   };
@@ -52,7 +52,7 @@ const newPuesto = ({ competencias }) => {
 
     const tmp = form["competencias"];
     name === "competencia"
-      ? (tmp[index].competencia = value)
+      ? (tmp[index].codigo = value)
       : (tmp[index].puntos = value);
     setForm((form) => ({
       ...form,
@@ -119,6 +119,7 @@ const newPuesto = ({ competencias }) => {
         empresa,
         competencias,
       };
+      console.log(data)
       const response = await fetch("http://localhost:3000/api/puesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
