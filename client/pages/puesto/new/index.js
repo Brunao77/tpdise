@@ -4,13 +4,14 @@ import { colors } from "../../../styles";
 import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import ButtonLink from "../../../components/ButtonLink";
+import Dropdown from "../../../components/Dropdown";
 
 const newPuesto = ({ competencias }) => {
   const [form, setForm] = useState({
     codigo: "",
     nombre: "",
     empresa: "",
-    caracteristica: [],
+    competencias: [],
   });
   const [searchTerm, setSearchTerm] = useState("");
   const [errors, setErrors] = useState({});
@@ -19,22 +20,22 @@ const newPuesto = ({ competencias }) => {
     setSearchTerm();
   }, []);
 
-  const addCharasterict = () => {
+  const addCompetencia = () => {
     setForm({
       ...form,
-      ["caracteristica"]: [
-        ...form["caracteristica"],
+      ["competencias"]: [
+        ...form["competencias"],
         { competencia: "", puntos: "", err: { competencia: "", puntos: "" } },
       ],
     });
   };
 
   const handleEliminar = (index) => {
-    const tmp = form["caracteristica"];
+    const tmp = form["competencias"];
     tmp.splice(index, 1);
     setForm((form) => ({
       ...form,
-      ["caracteristica"]: [...tmp],
+      ["competencias"]: [...tmp],
     }));
   };
 
@@ -46,16 +47,16 @@ const newPuesto = ({ competencias }) => {
     });
   };
 
-  const handleChangeChar = (e, index) => {
-    const { value, name } = e.target;
+  const handleChangeComp = (e, index) => {
+    const { value, name } = e;
 
-    const tmp = form["caracteristica"];
+    const tmp = form["competencias"];
     name === "competencia"
       ? (tmp[index].competencia = value)
       : (tmp[index].puntos = value);
     setForm((form) => ({
       ...form,
-      ["caracteristica"]: tmp,
+      ["competencias"]: tmp,
     }));
   };
 
@@ -77,29 +78,29 @@ const newPuesto = ({ competencias }) => {
     if (form.empresa.length > 50)
       err.empresa = "Empresa tener menos de 50 carácteres";
 
-    const tmp = form["caracteristica"];
+    const tmp = form["competencias"];
 
-    tmp.map((caracteristica) => {
-      caracteristica.err.competencia = "";
-      caracteristica.err.puntos = "";
-      if (!caracteristica.competencia)
-        caracteristica.err.competencia = "Competencia es requerido";
+    tmp.map((c) => {
+      c.err.competencia = "";
+      c.err.puntos = "";
+      if (!c.competencia)
+        c.err.competencia = "Competencia es requerido";
 
-      if (caracteristica.competencia.length > 50)
-        caracteristica.err.competencia =
+      if (c.competencia.length > 50)
+        c.err.competencia =
           "Competencia tener menos de 50 carácteres";
 
       if (
-        caracteristica.puntos < 0 ||
-        caracteristica.puntos > 10 ||
-        !caracteristica.puntos
+        c.puntos < 0 ||
+        c.puntos > 10 ||
+        !c.puntos
       )
-        caracteristica.err.puntos = "Puntos debe estar entre 0 y 10";
+        c.err.puntos = "Puntos debe estar entre 0 y 10";
     });
 
     setForm((form) => ({
       ...form,
-      ["caracteristica"]: tmp,
+      ["competencias"]: tmp,
     }));
 
     setErrors(err);
@@ -109,20 +110,22 @@ const newPuesto = ({ competencias }) => {
   const handleAceptButton = async () => {
     const err = formValidate();
 
-    if (err) {
-      const { codigo, nombre, descripcion, empresa, caracteristica } = form;
+    if (JSON.stringify(err) === '{}') {
+      const { codigo, nombre, descripcion, empresa, competencias } = form;
       const data = {
         codigo,
         nombre,
         descripcion,
         empresa,
-        competencias: caracteristica,
+        competencias,
       };
       const response = await fetch("http://localhost:3000/api/puesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      const res = await response.json();
+      console.log(res);
     }
   };
 
@@ -154,27 +157,40 @@ const newPuesto = ({ competencias }) => {
               err={errors.empresa}
             />
           </section>
-          <section className="characts-container">
-            <div className="characts-head">
+          <section className="comps-container" style={{height: "100%"}}>
+            <div className="comps-head">
               <span>Características del Puesto</span>
-              <button onClick={addCharasterict}>
+              <button onClick={addCompetencia}>
                 <img src="/plus.svg" />
               </button>
             </div>
-            <div className="characts">
-              {form["caracteristica"].map((caracteristica, index) => {
+            <div className="comps" style={{height: "100%"}}>
+              {form["competencias"].map((caracteristica, index) => {
                 return (
-                  <section key={index} className="new-characts">
-                    <Input
+                  <section key={index} className="new-comps">
+                    {/* <Input
                       placeholder="Competencia"
                       name="competencia"
                       value={caracteristica.competencia}
                       onChange={(e) => {
-                        handleChangeChar(e, index);
+                        handleChangeComp(e, index);
 
                         e.target.value.length >= 3
                           ? setSearchTerm(e.target.value)
                           : setSearchTerm(undefined);
+                      }}
+                      err={caracteristica.err.competencia}
+                    /> */}
+                    <Dropdown 
+                      placeholder="Competencia"
+                      name="competencia"
+                      data={competencias}
+                      dataKey='codigo'
+                      textField='nombre'
+                      onChange={(e) => {
+                        caracteristica.competencia=e.codigo
+                        const obj = {name: "competencia", value: e.codigo}
+                        handleChangeComp(obj, index);
                       }}
                       err={caracteristica.err.competencia}
                     />
@@ -186,7 +202,7 @@ const newPuesto = ({ competencias }) => {
                       max="10"
                       value={caracteristica.puntos}
                       onChange={(e) => {
-                        handleChangeChar(e, index);
+                        handleChangeComp(e.target, index);
                       }}
                     />
                     <Button
@@ -219,7 +235,7 @@ const newPuesto = ({ competencias }) => {
           width: 30vh;
           border: 1px solid ${colors.black};
         }
-        .comp-search {
+        .comps-search {
           display: flex;
           flex-direction: column;
           position: relative;
@@ -254,11 +270,11 @@ const newPuesto = ({ competencias }) => {
           width: 90%;
           height: 40px;
         }
-        .characts-container {
+        .comps-container {
           align-self: center;
           width: 90%;
         }
-        .characts-head {
+        .comps-head {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -266,7 +282,7 @@ const newPuesto = ({ competencias }) => {
           max-height: 35px;
           border-bottom: 1px solid ${colors.black};
         }
-        .characts {
+        .comps {
           margin-top: 10px;
           height: 100%;
           max-height: 40vh;
@@ -286,7 +302,7 @@ const newPuesto = ({ competencias }) => {
           background: none;
           cursor: pointer;
         }
-        .new-characts {
+        .new-comps {
           display: flex;
           gap: 20px;
           width: 100%;

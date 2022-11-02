@@ -7,6 +7,9 @@
   "scripts": {
     "dev": "nodemon server/index.js"
   },
+  "nodemonConfig": {
+    "ignore": ["client/**"]
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
