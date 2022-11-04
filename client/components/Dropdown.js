@@ -1,12 +1,21 @@
 import { colors } from "../styles";
-import { DropdownList } from "react-widgets";
+import { Combobox } from "react-widgets";
 import "react-widgets/styles.css";
 
-const Dropdown = ({ placeholder, name, data, dataKey, textField, onChange, err }) => {
+const Dropdown = ({
+  placeholder,
+  name,
+  data,
+  dataKey,
+  textField,
+  onChange,
+  value,
+  err,
+}) => {
   return (
     <>
       <div>
-        <DropdownList
+        <Combobox
           type="search"
           name={name}
           data={data}
@@ -14,6 +23,7 @@ const Dropdown = ({ placeholder, name, data, dataKey, textField, onChange, err }
           textField={textField}
           placeholder={placeholder}
           onChange={onChange}
+          value={value}
         />
         {err && <span>{err}</span>}
       </div>

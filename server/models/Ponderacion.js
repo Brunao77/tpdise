@@ -11,12 +11,12 @@ Ponderacion.init(
     },
     competenciaCodigo: {
       type: DataTypes.STRING,
-      primaryKey: true
+      unique: "puesto-comp",
     },
     puestoCodigo: {
       type: DataTypes.STRING,
-      primaryKey: true,
-    }
+      unique: "puesto-comp",
+    },
   },
   {
     sequelize,
@@ -24,9 +24,9 @@ Ponderacion.init(
     tableName: "Ponderaciones",
     name: {
       singular: "ponderacion",
-      plural: "ponderaciones"
-    }
+      plural: "ponderaciones",
+    },
   }
 );
 
-Ponderacion.belongsTo(Competencia, {foreignKey: 'competenciaCodigo'});
+Ponderacion.belongsTo(Competencia, { foreignKey: "competenciaCodigo" });

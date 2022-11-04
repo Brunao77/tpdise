@@ -25,3 +25,14 @@ export async function getCompetencias(req, res) {
     res.status(500).json({ message: error.message });
   }
 }
+
+export async function getCompetencia(req, res) {
+  try {
+    const codigo = req.params.codigo;
+    const response = await Competencia.findByPk(codigo.toString());
+    console.log(response);
+    res.json(response);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+}

@@ -13,19 +13,14 @@ const newPuesto = ({ competencias }) => {
     empresa: "",
     competencias: [],
   });
-  const [searchTerm, setSearchTerm] = useState("");
   const [errors, setErrors] = useState({});
-
-  useEffect(() => {
-    setSearchTerm();
-  }, []);
 
   const addCompetencia = () => {
     setForm({
       ...form,
       ["competencias"]: [
         ...form["competencias"],
-        { codigo: "", puntos: "", err: { competencia: "", puntos: "" } },
+        { codigo: "", ponderacion: "", err: { codigo: "", ponderacion: "" } },
       ],
     });
   };
@@ -53,20 +48,29 @@ const newPuesto = ({ competencias }) => {
     const tmp = form["competencias"];
     name === "competencia"
       ? (tmp[index].codigo = value)
-      : (tmp[index].puntos = value);
+      : (tmp[index].ponderacion = value);
     setForm((form) => ({
       ...form,
       ["competencias"]: tmp,
     }));
   };
 
-  const formValidate = () => {
+  const formValidate = async () => {
     let err = {};
 
     if (!form.codigo) err.codigo = "Código es requerido";
 
     if (form.codigo.length > 20)
       err.codigo = "Código tener menos de 20 carácteres";
+
+    if (!err.codigo) {
+      const response = await fetch(
+        `http://localhost:3000/api/puesto/${form.codigo}`
+      );
+      const existeCodigo = await response.json();
+
+      if (existeCodigo) err.codigo = "Existe puesto con codigo";
+    }
 
     if (!form.nombre) err.nombre = "Nombre es requerido";
 
@@ -80,22 +84,33 @@ const newPuesto = ({ competencias }) => {
 
     const tmp = form["competencias"];
 
-    tmp.map((c) => {
-      c.err.competencia = "";
-      c.err.puntos = "";
-      if (!c.competencia)
-        c.err.competencia = "Competencia es requerido";
+    tmp.map(async (c) => {
+      c.err.codigo = "";
+      c.err.ponderacion = "";
 
-      if (c.competencia.length > 50)
-        c.err.competencia =
-          "Competencia tener menos de 50 carácteres";
+      if (!c.codigo) {
+        c.err.codigo = "Competencia es requerido";
+        err.competencias = true;
+      }
+
+      if (c.codigo.length > 50) {
+        c.err.codigo = "Competencia tener menos de 50 carácteres";
+        err.competencias = true;
+      }
 
       if (
-        c.puntos < 0 ||
-        c.puntos > 10 ||
-        !c.puntos
-      )
-        c.err.puntos = "Puntos debe estar entre 0 y 10";
+        !competencias.find(
+          (competencia) => competencia.codigo === c.codigo.codigo
+        )
+      ) {
+        c.err.codigo = "No existe competencia con codigo";
+        err.competencias = true;
+      }
+
+      if (c.ponderacion < 0 || c.ponderacion > 10 || !c.ponderacion) {
+        c.err.ponderacion = "Puntos debe estar entre 0 y 10";
+        err.competencias = true;
+      }
     });
 
     setForm((form) => ({
@@ -108,24 +123,29 @@ const newPuesto = ({ competencias }) => {
   };
 
   const handleAceptButton = async () => {
-    const err = formValidate();
-
-    if (JSON.stringify(err) === '{}') {
+    const err = await formValidate();
+    console.log(JSON.stringify(err));
+    if (JSON.stringify(err) === "{}") {
       const { codigo, nombre, descripcion, empresa, competencias } = form;
       const data = {
         codigo,
         nombre,
         descripcion,
         empresa,
-        competencias,
+        competencias: competencias.map((competencia) => {
+          return {
+            codigo: competencia.codigo.codigo,
+            ponderacion: competencia.ponderacion,
+          };
+        }),
       };
+      console.log(data);
       const response = await fetch("http://localhost:3000/api/puesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       const res = await response.json();
-      console.log(res);
     }
   };
 
@@ -157,54 +177,50 @@ const newPuesto = ({ competencias }) => {
               err={errors.empresa}
             />
           </section>
-          <section className="comps-container" style={{height: "100%"}}>
+          <section className="comps-container" style={{ height: "100%" }}>
             <div className="comps-head">
               <span>Características del Puesto</span>
               <button onClick={addCompetencia}>
                 <img src="/plus.svg" />
               </button>
             </div>
-            <div className="comps" style={{height: "100%"}}>
-              {form["competencias"].map((caracteristica, index) => {
+            <div className="comps" style={{ height: "100%" }}>
+              {form["competencias"].map((competencia, index) => {
                 return (
                   <section key={index} className="new-comps">
-                    {/* <Input
-                      placeholder="Competencia"
-                      name="competencia"
-                      value={caracteristica.competencia}
-                      onChange={(e) => {
-                        handleChangeComp(e, index);
-
-                        e.target.value.length >= 3
-                          ? setSearchTerm(e.target.value)
-                          : setSearchTerm(undefined);
-                      }}
-                      err={caracteristica.err.competencia}
-                    /> */}
-                    <Dropdown 
+                    <Dropdown
                       placeholder="Competencia"
                       name="competencia"
                       data={competencias}
-                      dataKey='codigo'
-                      textField='nombre'
+                      dataKey="codigo"
+                      textField="nombre"
                       onChange={(e) => {
-                        caracteristica.competencia=e.codigo
-                        const obj = {name: "competencia", value: e.codigo}
+                        competencia.codigo = e;
+                        const obj = { name: "competencia", value: e };
                         handleChangeComp(obj, index);
                       }}
-                      err={caracteristica.err.competencia}
+                      value={competencia.competencia}
+                      err={competencia.err.codigo}
                     />
-                    <input
-                      type="number"
-                      name="puntos"
-                      placeholder="Puntos"
-                      min="0"
-                      max="10"
-                      value={caracteristica.puntos}
-                      onChange={(e) => {
-                        handleChangeComp(e.target, index);
-                      }}
-                    />
+                    <div className="container-input-pond">
+                      <input
+                        type="number"
+                        name="puntos"
+                        placeholder="Puntos"
+                        min="0"
+                        max="10"
+                        value={competencia.ponderacion}
+                        onChange={(e) => {
+                          handleChangeComp(e.target, index);
+                        }}
+                        className="pond-input"
+                      />
+                      {competencia.err.ponderacion && (
+                        <span className="pond-error">
+                          {competencia.err.ponderacion}
+                        </span>
+                      )}
+                    </div>
                     <Button
                       bgcolor={colors.secondary}
                       onClick={() => handleEliminar(index)}
@@ -308,6 +324,20 @@ const newPuesto = ({ competencias }) => {
           width: 100%;
           justify-content: space-between;
           height: 40px;
+        }
+        .container-input-pond {
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          height: 100%;
+        }
+        .pond-error {
+          color: ${colors.secondary};
+          height: 5%;
+          font-size: 12px;
+        }
+        .pond-input {
+          height: 95%;
         }
       `}</style>
     </>

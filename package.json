@@ -8,7 +8,9 @@
     "dev": "nodemon server/index.js"
   },
   "nodemonConfig": {
-    "ignore": ["client/**"]
+    "ignore": [
+      "client/**"
+    ]
   },
   "keywords": [],
   "author": "",
