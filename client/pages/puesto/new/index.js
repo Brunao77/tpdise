@@ -5,6 +5,7 @@ import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import ButtonLink from "../../../components/ButtonLink";
 import Dropdown from "../../../components/Dropdown";
+import Modal from "../../../components/Modal";
 
 const newPuesto = ({ competencias }) => {
   const [form, setForm] = useState({
@@ -14,6 +15,7 @@ const newPuesto = ({ competencias }) => {
     competencias: [],
   });
   const [errors, setErrors] = useState({});
+  const [success, setSucces] = useState(false);
 
   const addCompetencia = () => {
     setForm({
@@ -84,7 +86,7 @@ const newPuesto = ({ competencias }) => {
 
     const tmp = form["competencias"];
 
-    tmp.map(async (c) => {
+    tmp.map(async (c, index) => {
       c.err.codigo = "";
       c.err.ponderacion = "";
 
@@ -111,6 +113,15 @@ const newPuesto = ({ competencias }) => {
         c.err.ponderacion = "Puntos debe estar entre 0 y 10";
         err.competencias = true;
       }
+
+      for (let i = 0; i < tmp.length; i++) {
+        if (i !== index) {
+          if (tmp[i].codigo === c.codigo) {
+            c.err.codigo = "No puede haber 2 competencias iguales";
+            err.competencias = true;
+          }
+        }
+      }
     });
 
     setForm((form) => ({
@@ -124,7 +135,6 @@ const newPuesto = ({ competencias }) => {
 
   const handleAceptButton = async () => {
     const err = await formValidate();
-    console.log(JSON.stringify(err));
     if (JSON.stringify(err) === "{}") {
       const { codigo, nombre, descripcion, empresa, competencias } = form;
       const data = {
@@ -139,13 +149,13 @@ const newPuesto = ({ competencias }) => {
           };
         }),
       };
-      console.log(data);
       const response = await fetch("http://localhost:3000/api/puesto", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       const res = await response.json();
+      if (res) setSucces(true);
     }
   };
 
@@ -241,6 +251,7 @@ const newPuesto = ({ competencias }) => {
             ACEPTAR
           </Button>
         </div>
+        {success && <Modal />}
       </Layout>
       <style jsx>{`
         input {
