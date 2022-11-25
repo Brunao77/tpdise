@@ -1,15 +1,12 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
-import { Ponderacion } from "./Ponderacion.js";
+import { PonderacionClon } from "./PonderacionClon.js";
+import { Puesto } from "./Puesto.js";
 
-export class Puesto extends Model {}
+export class PuestoClon extends Model {}
 
-Puesto.init(
+PuestoClon.init(
   {
-    codigo: {
-      type: DataTypes.STRING,
-      unique: true,
-    },
     nombre: {
       type: DataTypes.STRING,
     },
@@ -22,8 +19,8 @@ Puesto.init(
   },
   {
     sequelize,
-    modelName: "Puesto",
-    tableName: "Puestos",
+    modelName: "PuestoClon",
+    tableName: "PuestosClon",
     name: {
       singular: "puesto",
       plural: "puestos"
@@ -31,4 +28,5 @@ Puesto.init(
   }
 );
 
-Puesto.Ponderaciones = Puesto.hasMany(Ponderacion, {foreignKey: "idPuesto"});
+PuestoClon.Ponderaciones = PuestoClon.hasMany(PonderacionClon, {foreignKey: "idPuesto"});
+PuestoClon.belongsTo(Puesto, {foreignKey: "esClonDe"});

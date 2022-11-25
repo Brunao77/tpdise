@@ -1,14 +1,11 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
+import { Competencia } from "./Competencia.js";
 
-export class Competencia extends Model {}
+export class CompetenciaClon extends Model {}
 
-Competencia.init(
+CompetenciaClon.init(
   {
-    codigo: {
-      type: DataTypes.STRING,
-      unique: true,
-    },
     nombre: {
       type: DataTypes.STRING,
     },
@@ -18,11 +15,13 @@ Competencia.init(
   },
   {
     sequelize,
-    modelName: "Competencia",
-    tableName: "Competencias",
+    modelName: "CompetenciaClon",
+    tableName: "CompetenciasClon",
     name: {
       singular: "competencia",
       plural: "competencias"
     }
   }
 );
+
+CompetenciaClon.belongsTo(Competencia, {foreignKey: "esClonDe"});

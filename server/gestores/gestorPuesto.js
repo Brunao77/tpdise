@@ -7,8 +7,8 @@ export async function postPuesto(req, res) {
     const { codigo, nombre, descripcion, empresa, competencias } = req.body;
     const ponderaciones = competencias.map((competencia) => {
       return {
-        competenciaCodigo: competencia.codigo,
-        ponderacion: competencia.ponderacion,
+        idCompetencia: competencia.codigo,
+        valor: competencia.ponderacion,
       };
     });
     const newPuesto = new Puesto(
@@ -26,14 +26,12 @@ export async function postPuesto(req, res) {
         ],
       }
     );
-
-    // No se puede asociar directamente con objetos Ponderación, sino que los crea en el metodo set().
+    
     newPuesto.set("ponderaciones", ponderaciones);
-
-    // Esto devuelve un array de objetos Ponderacion:
 
     const puestoDAO = new PuestoDAO();
     const result = await puestoDAO.guardarPuesto(newPuesto);
+    
     res.json(newPuesto);
   } catch (error) {
     return res.status(500).json({ message: error.message });

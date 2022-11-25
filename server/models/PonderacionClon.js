@@ -1,10 +1,11 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
-import { Competencia } from "./Competencia.js";
+import { CompetenciaClon } from "./CompetenciaClon.js";
+import { Ponderacion } from "./Ponderacion.js";
 
-export class Ponderacion extends Model {}
+export class PonderacionClon extends Model {}
 
-Ponderacion.init(
+PonderacionClon.init(
   {
     valor: {
       type: DataTypes.REAL,
@@ -17,11 +18,12 @@ Ponderacion.init(
       type: DataTypes.INTEGER,
       unique: "puesto-comp",
     },
+    
   },
   {
     sequelize,
-    modelName: "Ponderacion",
-    tableName: "Ponderaciones",
+    modelName: "PonderacionClon",
+    tableName: "PonderacionesClon",
     name: {
       singular: "ponderacion",
       plural: "ponderaciones",
@@ -29,4 +31,5 @@ Ponderacion.init(
   }
 );
 
-Ponderacion.belongsTo(Competencia, { foreignKey: "idCompetencia" });
+PonderacionClon.belongsTo(CompetenciaClon, { foreignKey: "idCompetencia" });
+PonderacionClon.belongsTo(Ponderacion, { foreignKey: "esClonDe" });

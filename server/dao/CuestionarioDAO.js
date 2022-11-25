@@ -1,9 +1,9 @@
 import { sequelize } from "../db/database.js";
 
-export class PuestoDAO {
-  async guardarPuesto(puesto) {
+export class CeusetionarioDAO {
+  async guardarCuestionario(cuestionario){
     return await sequelize.transaction(async (t) => {
-      await puesto.save({ 
+      await cuestionario.save({ 
         transaction: t,
       });
     });

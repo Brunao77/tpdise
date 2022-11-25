@@ -100,7 +100,7 @@ const newPuesto = ({ competencias }) => {
 
       if (
         !competencias.find(
-          (competencia) => competencia.codigo === c.codigo.codigo
+          (competencia) => competencia.codigo === c.codigo
         )
       ) {
         c.err.codigo = "No existe competencia con codigo";
@@ -134,7 +134,7 @@ const newPuesto = ({ competencias }) => {
         empresa,
         competencias: competencias.map((competencia) => {
           return {
-            codigo: competencia.codigo.codigo,
+            codigo: competencia.codigo,
             ponderacion: competencia.ponderacion,
           };
         }),
@@ -195,8 +195,8 @@ const newPuesto = ({ competencias }) => {
                       dataKey="codigo"
                       textField="nombre"
                       onChange={(e) => {
-                        competencia.codigo = e;
-                        const obj = { name: "competencia", value: e };
+                        competencia.codigo = e.codigo;
+                        const obj = { name: "competencia", value: e.codigo };
                         handleChangeComp(obj, index);
                       }}
                       value={competencia.competencia}
