@@ -1,6 +1,7 @@
 import { Puesto } from "../models/Puesto.js";
 import { PuestoDAO } from "../dao/PuestoDAO.js";
-import { Ponderacion } from "../models/Ponderacion.js";
+import { FactorDAO } from "../dao/FactorDAO.js";
+import { PreguntaDAO } from "../dao/PreguntaDAO.js";
 
 export async function postPuesto(req, res) {
   try {
@@ -41,29 +42,46 @@ export async function postPuesto(req, res) {
 export async function getPuestos(req, res) {
   try {
     const codigo = req.params.codigo;
+    const puestoDAO = new PuestoDAO;
 
-    if (codigo) {
-      const puesto = await Puesto.findOne({
-        where: {
-          codigo,
-        },
-        include: Ponderacion,
-      });
-      console.log(puesto.ponderaciones);
+    if(codigo) {
+      const puesto = await puestoDAO.getPuesto(codigo);
       res.json(puesto);
-    } else res.json(codigo);
+    }else {
+      const puestos = await puestoDAO.getPuestos();
+      res.json(puestos);
+    }
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 }
 
-export async function getPuesto(req, res) {
-  try {
-    const codigo = req.params.codigo;
-    const response = await Puesto.findByPk(codigo.toString());
-    console.log(response);
-    res.json(response);
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+// mandar codigoPuesto como parametro
+export async function getPonderaciones(req, res){
+  const codigo = req.params.codigo;
+  const puestoDAO = new PuestoDAO;
+  const factorDAO = new FactorDAO;
+  const preguntaDAO = new PreguntaDAO;
+
+  const puesto = await puestoDAO.getPuesto(codigo);
+  let ponderaciones = puesto.ponderaciones;
+  ponderaciones = await Promise.all( 
+    ponderaciones.map(async (ponderacion) =>{ 
+      ponderacion = await ponderacion.dataValues;
+      ponderacion.factores = await factorDAO.getFactores(ponderacion.idCompetencia);
+      return ponderacion;
+    })
+  );
+  for(let ponderacion of ponderaciones) {
+    await Promise.all(
+      ponderacion.factores.map(async (factor) => {
+        factor.preguntas = await preguntaDAO.getPreguntas(factor.id);
+        if(factor.preguntas.count > 2)ponderacion.esEvaluable = true;
+        else if(ponderacion.esEvaluable == undefined) ponderacion.esEvaluable = false;
+        return
+      })
+    )
   }
+    
+  res.json({ponderaciones});
 }

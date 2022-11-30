@@ -34,18 +34,25 @@ export async function newCandidato(req, res) {
   }
 }
 
+// mandar lista de nroCandidato como body.
 export async function verificarCuestionarios(req, res){ 
   try {
+    const listaCandidatos = req.body;
     let candidatos = [];
+    let eliminados = [];
     const candidatoDAO = new CandidatoDAO;
     
-    await req.body.map(async (candidato) => {
-      const c = await candidatoDAO.getCuestionarios(candidato.nroCandidato);
-      candidatos.push(c);
-      console.log(c);
-    });
+    await Promise.all(
+      listaCandidatos.map(async (candidato) => {
+        if(await candidatoDAO.getCuestionarios(candidato) != null){
+          eliminados.push(candidato);
+        }else {
+          candidatos.push(candidato);
+        }
+      })
+    );
 
-    res.json(candidatos);
+    res.json({candidatos, eliminados});
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

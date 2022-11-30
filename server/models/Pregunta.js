@@ -33,6 +33,6 @@ Pregunta.init(
   }
 );
 
-Pregunta.belongsTo(Factor);
-Pregunta.hasMany(Puntaje, {as: "opciones", foreignKey: "idPregunta"});
+Pregunta.Factor = Pregunta.belongsTo(Factor);
+Pregunta.Opciones = Pregunta.hasMany(Puntaje, {as: "opciones", foreignKey: "idPregunta"});
 Pregunta.belongsTo(OpcionDeRespuesta);

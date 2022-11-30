@@ -27,4 +27,4 @@ Factor.init(
   }
 );
 
-Factor.belongsTo(Competencia);
+Factor.Competencia = Factor.belongsTo(Competencia);

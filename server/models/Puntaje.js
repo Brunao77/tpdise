@@ -29,4 +29,4 @@ Puntaje.init(
   }
 );
 
-Puntaje.belongsTo(Opcion, { foreignKey: "idOpcion" });
+Puntaje.Opcion = Puntaje.belongsTo(Opcion, { foreignKey: "idOpcion" });

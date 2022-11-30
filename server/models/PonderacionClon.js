@@ -31,5 +31,5 @@ PonderacionClon.init(
   }
 );
 
-PonderacionClon.belongsTo(CompetenciaClon, { foreignKey: "idCompetencia" });
+PonderacionClon.Competencia = PonderacionClon.belongsTo(CompetenciaClon, { foreignKey: "idCompetencia" });
 PonderacionClon.belongsTo(Ponderacion, { foreignKey: "esClonDe" });

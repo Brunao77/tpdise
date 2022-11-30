@@ -19,7 +19,6 @@ export class CandidatoDAO {
       });
       if(nroCandidato)filtro.push({nroCandidato});
 
-      console.log(filtro);
       const candidatos = await Candidato.findAll({
         where: {
           [Op.or]: filtro
@@ -31,6 +30,26 @@ export class CandidatoDAO {
       return error;
     }
     
+  }
+
+  async getCandidato(params){
+    const { tipoDoc, documento, clave} = params;
+
+    return await Candidato.findOne({
+      where: {
+        tipoDoc,
+        documento
+      },
+      include: {
+        association: Candidato.Cuestionarios,
+        where: {
+          clave,
+          estado: {
+            [Op.or]: ["activo", "enProceso"]
+          }
+        }
+      },
+    });
   }
 
   async guardarCandidato(candidato){
@@ -61,4 +80,5 @@ export class CandidatoDAO {
       return error;
     }
   }
+
 }

@@ -1,9 +1,12 @@
 import { Router } from "express";
-import { getPuestos, postPuesto, getPuesto } from "../gestores/gestorPuesto.js";
+import { getPonderaciones, getPuestos, postPuesto } from "../gestores/gestorPuesto.js";
 
 const router = Router();
 
-router.get("/:codigo", getPuesto);
+router.get("/:codigo", getPuestos);
+router.get("/", getPuestos);
+
+router.get("/ponderaciones/:codigo", getPonderaciones);
 
 router.post("/", postPuesto);
 

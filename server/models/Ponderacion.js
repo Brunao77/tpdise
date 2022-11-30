@@ -29,4 +29,4 @@ Ponderacion.init(
   }
 );
 
-Ponderacion.belongsTo(Competencia, { foreignKey: "idCompetencia" });
+Ponderacion.Competencia = Ponderacion.belongsTo(Competencia, { foreignKey: "idCompetencia" });
