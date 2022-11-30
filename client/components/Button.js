@@ -7,7 +7,9 @@ const Button = ({ children, onClick, bgcolor }) => {
       <style jsx>{`
         button {
           display: flex;
+          text-align: center;
           align-items: center;
+          justify-content: center;
           background: ${bgcolor};
           padding: 20px;
           border-radius: 10px;
@@ -17,6 +19,7 @@ const Button = ({ children, onClick, bgcolor }) => {
           transition: 0.2s;
           border: none;
           cursor: pointer;
+          width: 100%;
         }
         button:active {
           transform: scale(97%);
