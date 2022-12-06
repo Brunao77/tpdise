@@ -7,6 +7,12 @@ export class Evaluacion extends Model {}
 
 Evaluacion.init(
   {
+    // puesto: {
+    //   type: DataTypes.VIRTUAL,
+    //   set(puestoClon) {
+    //     this.setDataValue('puesto', puestoClon.dataValues);
+    //   }
+    // }
   },
   {
     sequelize,
@@ -20,4 +26,4 @@ Evaluacion.init(
 );
 
 Evaluacion.Cuestionarios = Evaluacion.hasMany(Cuestionario);
-Evaluacion.Puesto = Evaluacion.belongsTo(PuestoClon);
+Evaluacion.Puesto = Evaluacion.belongsTo(PuestoClon, {foreignKey: "id"});

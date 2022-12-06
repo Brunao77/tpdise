@@ -8,7 +8,11 @@ export class FactorDAO {
         competenciaId: competencia
       }
     });
-    // console.log(f);
     return f;
+  }
+  async guardarFactorClon(factorClon, t){
+    return await factorClon.save({
+      transaction: t,
+    });
   }
 }

@@ -1,11 +1,32 @@
+import { sequelize } from "../db/database.js";
+import { OpcionDeRespuesta } from "../models/OpcionDeRespuesta.js";
 import { Pregunta } from "../models/Pregunta.js";
+import { Puntaje } from "../models/Puntaje.js";
 
 export class PreguntaDAO {
   async getPreguntas(factor) {
-    return await Pregunta.findAndCountAll({
+    return await Pregunta.findAll({
       where: {
         factorId: factor
       }
     });
+  }
+  async getOpciones(idPregunta){
+    return await Puntaje.findAll({
+      where: {
+        idPregunta: idPregunta,
+      },
+      include: {
+        association: Puntaje.Opcion,
+      },
+    });
+  }
+  async getOpcionDeRespuesta(idOpcionDeRespuesta){
+    return await OpcionDeRespuesta.findByPk(idOpcionDeRespuesta);
+  }
+  async guardarPreguntaClon(preguntaClon, t) {
+    return await preguntaClon.save({ 
+        transaction: t,
+      });
   }
 }

@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { generarClave } from "../gestores/gestorEvaluaciones.js";
+import { crearEvaluacion, generarClave } from "../gestores/gestorEvaluaciones.js";
 
 const router = Router();
 
 router.post("/claves", generarClave);
+router.post("/new", crearEvaluacion);
 
 export default router;

@@ -31,4 +31,4 @@ PuntajeClon.init(
 );
 
 PuntajeClon.belongsTo(Puntaje, { foreignKey: "esClonDe"});
-PuntajeClon.belongsTo(OpcionClon, { foreignKey: "idOpcion" });
+PuntajeClon.Opcion = PuntajeClon.belongsTo(OpcionClon, { foreignKey: "idOpcion" });

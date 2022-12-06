@@ -7,4 +7,8 @@ export class CompetenciaDAO {
   async obtenerCompetencias() {
     return await Competencia.findAll({});
   }
+
+  async getCompetencia(idCompetencia){
+    return await Competencia.findByPk(idCompetencia);
+  }
 }

@@ -2,6 +2,7 @@ import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
 import { Bloque } from "./Bloque.js";
 import { ResultadoCompetencia } from "./ResultadoCompetencia.js";
+import { Candidato } from "./Candidato.js";
 
 export class Cuestionario extends Model {}
 

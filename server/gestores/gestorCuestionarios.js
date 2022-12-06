@@ -1,4 +1,4 @@
-import { CeusetionarioDAO } from "../dao/CuestionarioDAO.js";
+import { CuestionarioDAO } from "../dao/CuestionarioDAO.js";
 import { Cuestionario } from "../models/Cuestionario.js";
 
 export async function getCandidatos(req, res) {
@@ -13,25 +13,16 @@ export async function getCandidatos(req, res) {
   }
 }
 
-export async function newCuestionario(req, res) {
+export async function crearCuestionario(candidato, clave) {
   try {
-    const {estado, nroCandidato} = req.body;
-
-    const cuestionarioDAO = new CeusetionarioDAO;
     const cuestionario = new Cuestionario({
-      estado,
-      nroCandidato,
-      clave: generarClave()
+      nroCandidato: candidato,
+      estado: "activo",
+      clave: clave,
+      fechaInicio: Date.now(),
     });
-
-    const result = await cuestionarioDAO.guardarCuestionario(cuestionario);
-    res.json(cuestionario);
-
+    return cuestionario;
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return error;
   }
-}
-
-function generarClave(){
-  return 12345678;
 }

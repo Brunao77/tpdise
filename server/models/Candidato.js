@@ -37,3 +37,4 @@ Candidato.init(
 );
 
 Candidato.Cuestionarios = Candidato.hasMany(Cuestionario, {sourceKey: "nroCandidato", foreignKey: "nroCandidato"});
+Cuestionario.Candidato = Cuestionario.belongsTo(Candidato, {sourceKey: "nroCandidato", foreignKey: "nroCandidato"});

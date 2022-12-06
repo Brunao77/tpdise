@@ -4,10 +4,12 @@ import { Puesto } from "../models/Puesto.js";
 
 export class PuestoDAO {
   async guardarPuesto(puesto) {
+    console.log(await puesto.toJSON());
     return await sequelize.transaction(async (t) => {
-      await puesto.save({ 
+      const p = await puesto.save({ 
         transaction: t,
       });
+      console.log("p: ", await p.toJSON());
     });
   }
 

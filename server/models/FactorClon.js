@@ -28,5 +28,5 @@ FactorClon.init(
   }
 );
 
-FactorClon.belongsTo(CompetenciaClon);
+FactorClon.Competencia = FactorClon.belongsTo(CompetenciaClon);
 FactorClon.belongsTo(Factor, {foreignKey: "esClonDe"}); 

@@ -44,7 +44,11 @@ export async function initDB(req, res){
             descripcion: "Color blanco",
           }
         }
-      ]
+      ],
+      opcionDeRespuesta: {
+        nombre: "Opcion simple",
+        descripcion: "Multiples opciones, solo se puede seleccionar una.",
+      }
     },
     {
       codigo: "P002",
@@ -83,7 +87,8 @@ export async function initDB(req, res){
           nombre: "Competencia 2",
           descripcion: "Competencia de ejemplo para rellenar la tabla.",
         }
-      }
+      },
+      opcionDeRespuestaId: 1,
     },
     {
       codigo: "P003",
@@ -113,7 +118,8 @@ export async function initDB(req, res){
           }
         }
       ],
-      factorId: 2 
+      factorId: 2,
+      opcionDeRespuestaId: 1,
     },
     {
       codigo: "P004",
@@ -143,7 +149,13 @@ export async function initDB(req, res){
           }
         }
       ],
-      factorId: 2 
+      factor: {
+        nombre: "Factor 3",
+        descripcion: "Factor de ejemplo para rellenar la tabla.",
+        orden: "1",
+        competenciaId: 2,
+      },
+      opcionDeRespuestaId: 1,
     },
   ], {
     include: [{
@@ -154,6 +166,9 @@ export async function initDB(req, res){
       association: Pregunta.Factor,
       include: [Factor.Competencia]
     },
+    {
+      association: Pregunta.OpcionDeRespuesta,
+    }
   ]
   });
 

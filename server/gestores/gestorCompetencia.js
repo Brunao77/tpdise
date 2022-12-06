@@ -1,5 +1,7 @@
 import { Competencia } from "../models/Competencia.js";
 import { CompetenciaDAO } from "../dao/CompetenciaDAO.js";
+import { CompetenciaClon } from "../models/CompetenciaClon.js";
+import { crearFactoresClon } from "./gestorFactores.js";
 
 export async function postCompetencia(req, res) {
   try {
@@ -35,4 +37,24 @@ export async function getCompetencia(req, res) {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+}
+
+export async function crearCompetenciaClon(idCompetencia){
+  try {
+    const competenciaDAO = new CompetenciaDAO;
+    const competencia = await competenciaDAO.getCompetencia(idCompetencia);
+
+    const competenciaClon = new CompetenciaClon({
+      esClonDe: competencia.id,
+      nombre: competencia.nombre,
+      descripcion: competencia.descripcion,
+    });
+
+    const factores = await crearFactoresClon(idCompetencia, competenciaClon);
+
+    return {competencia: competenciaClon, factores: factores};  
+  } catch (error) {
+    return new Error(error.message);
+  }
+  
 }
