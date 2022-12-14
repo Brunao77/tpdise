@@ -1,11 +1,11 @@
 import { colors } from "../styles";
 
-const Input = ({ placeholder, name, value, onChange, err }) => {
+const Input = ({ placeholder, name, value, onChange, err, type }) => {
   return (
     <>
       <div>
         <input
-          type="search"
+          type={!type ? "search" : type}
           name={name}
           value={value}
           placeholder={placeholder}
@@ -25,7 +25,7 @@ const Input = ({ placeholder, name, value, onChange, err }) => {
           outline: none;
           padding: 5px;
           font-weight: 600;
-          width: 30vh;
+          width: 100%;
           height: 95%;
           border: 1px solid ${err ? colors.secondary : colors.black};
         }

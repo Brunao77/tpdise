@@ -44,7 +44,31 @@ const Login = () => {
                   <Input placeholder="Usuario" />
                 </div>
                 <div className="cont-input">
-                  <Input placeholder="Contraseña" />
+                  <Input placeholder="Contraseña" type="password" />
+                </div>
+                <Button bgcolor={colors.primary}>INGRESAR</Button>
+              </div>
+            </>
+          )}
+          {menuSession === "cuestionario" && (
+            <>
+              <h4>Ingrese sus datos para acceder a un Cuestionario</h4>
+              <div className="cont-btn">
+                <div className="first-cont">
+                  <select className="tipo-inp">
+                    <option hidden selected>
+                      Tipo
+                    </option>
+                    <option value="value1">DNI</option>
+                    <option value="value2">CUIT</option>
+                    <option value="value3">CUIL</option>
+                  </select>
+                  <div className="cont-input-nro">
+                    <Input placeholder="Numero de documento" />
+                  </div>
+                </div>
+                <div className="cont-input">
+                  <Input placeholder="Clave" type="password" />
                 </div>
                 <Button bgcolor={colors.primary}>INGRESAR</Button>
               </div>
@@ -53,6 +77,14 @@ const Login = () => {
         </section>
       </main>
       <style jsx>{`
+        .first-cont {
+          display: flex;
+          gap: 10px;
+          height: 50px;
+        }
+        .tipo-inp {
+          border-radius: 10px;
+        }
         header {
           display: flex;
           width: 100%;
@@ -103,6 +135,7 @@ const Login = () => {
         }
         .cont-input {
           height: 50px;
+          width: 100%;
           margin-bottom: 15px;
         }
       `}</style>
