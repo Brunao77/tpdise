@@ -9,6 +9,9 @@ export default function Home() {
         <ButtonLink bgcolor={colors.primary} href="/puesto">
           GESTIONAR PUESTOS
         </ButtonLink>
+        <ButtonLink bgcolor={colors.primary} href="/evaluar">
+          EVALUAR CANDIDATOS
+        </ButtonLink>
       </Layout>
     </>
   );

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Layout from "../../../components/Layout";
 import { colors } from "../../../styles";
 import Input from "../../../components/Input";
@@ -101,9 +101,7 @@ const newPuesto = ({ competencias }) => {
       }
 
       if (
-        !competencias.find(
-          (competencia) => competencia.codigo === c.codigo
-        )
+        !competencias.find((competencia) => competencia.codigo === c.codigo)
       ) {
         c.err.codigo = "No existe competencia con codigo";
         err.competencias = true;
