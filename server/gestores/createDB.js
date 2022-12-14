@@ -4,8 +4,22 @@ import { Pregunta } from "../models/Pregunta.js"
 import { Puesto } from "../models/Puesto.js";
 import { Puntaje } from "../models/Puntaje.js";
 import { Consultor } from "../models/Consultor.js";
+import { Competencia } from "../models/Competencia.js";
+import { Cuestionario } from "../models/Cuestionario.js";
 
 export async function initDB(req, res){
+  Competencia.bulkCreate([
+    {
+      codigo: "C001",
+      nombre: "Competencia 1",
+      descripcion: "Competencia de ejemplo para rellenar la tabla.",
+    },
+    {
+      codigo: "C002",
+      nombre: "Competencia 2",
+      descripcion: "Competencia de ejemplo para rellenar la tabla.",
+    }
+  ])
   Pregunta.bulkCreate([
     {
       codigo: "P001",
@@ -16,11 +30,7 @@ export async function initDB(req, res){
         nombre: "Factor 1",
         descripcion: "Factor de ejemplo para rellenar la tabla.",
         orden: "1",
-        competencia: {
-          codigo: "C001",
-          nombre: "Competencia 1",
-          descripcion: "Competencia de ejemplo para rellenar la tabla.",
-        }
+        competenciaId: 1,
       },
       opciones: [
         {
@@ -82,11 +92,7 @@ export async function initDB(req, res){
         nombre: "Factor 2",
         descripcion: "Factor de ejemplo para rellenar la tabla.",
         orden: "1",
-        competencia: {
-          codigo: "C002",
-          nombre: "Competencia 2",
-          descripcion: "Competencia de ejemplo para rellenar la tabla.",
-        }
+        competenciaId: 2
       },
       opcionDeRespuestaId: 1,
     },
@@ -157,6 +163,192 @@ export async function initDB(req, res){
       },
       opcionDeRespuestaId: 1,
     },
+    {
+      codigo: "P005",
+      enunciado: "¿Pregunta de ejemplo 5?",
+      nombre: "Pregunta de ejemplo",
+      descripcion: "Pregunta de ejemplo para rellenar la tabla.",
+      opciones: [
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Ej.",
+            descripcion: "Ejemplo",
+          }
+        },
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Re.",
+            descripcion: "Relleno",
+          }
+        },
+        {
+          valor: 10,
+          opcion: {
+            nombre: "Messi",
+            descripcion: "Messi",
+          }
+        }
+      ],
+      factorId: 2,
+      opcionDeRespuestaId: 1,
+    },
+    {
+      codigo: "P006",
+      enunciado: "¿Pregunta de ejemplo 6?",
+      nombre: "Pregunta de ejemplo",
+      descripcion: "Pregunta de ejemplo para rellenar la tabla.",
+      opciones: [
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Ej.",
+            descripcion: "Ejemplo",
+          }
+        },
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Re.",
+            descripcion: "Relleno",
+          }
+        },
+        {
+          valor: 10,
+          opcion: {
+            nombre: "Messi",
+            descripcion: "Messi",
+          }
+        }
+      ],
+      factorId: 2,
+      opcionDeRespuestaId: 1,
+    },
+    {
+      codigo: "P007",
+      enunciado: "¿Pregunta de ejemplo 7?",
+      nombre: "Pregunta de ejemplo",
+      descripcion: "Pregunta de ejemplo para rellenar la tabla.",
+      opciones: [
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Ej.",
+            descripcion: "Ejemplo",
+          }
+        },
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Re.",
+            descripcion: "Relleno",
+          }
+        },
+        {
+          valor: 10,
+          opcion: {
+            nombre: "Messi",
+            descripcion: "Messi",
+          }
+        }
+      ],
+      factorId: 1,
+      opcionDeRespuestaId: 1,
+    },
+    {
+      codigo: "P008",
+      enunciado: "¿Pregunta de ejemplo 8?",
+      nombre: "Pregunta de ejemplo",
+      descripcion: "Pregunta de ejemplo para rellenar la tabla.",
+      opciones: [
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Ej.",
+            descripcion: "Ejemplo",
+          }
+        },
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Re.",
+            descripcion: "Relleno",
+          }
+        },
+        {
+          valor: 10,
+          opcion: {
+            nombre: "Messi",
+            descripcion: "Messi",
+          }
+        }
+      ],
+      factorId: 1,
+      opcionDeRespuestaId: 1,
+    },
+    {
+      codigo: "P009",
+      enunciado: "¿Pregunta de ejemplo 9?",
+      nombre: "Pregunta de ejemplo",
+      descripcion: "Pregunta de ejemplo para rellenar la tabla.",
+      opciones: [
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Ej.",
+            descripcion: "Ejemplo",
+          }
+        },
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Re.",
+            descripcion: "Relleno",
+          }
+        },
+        {
+          valor: 10,
+          opcion: {
+            nombre: "Messi",
+            descripcion: "Messi",
+          }
+        }
+      ],
+      factorId: 3,
+      opcionDeRespuestaId: 1,
+    },
+    {
+      codigo: "P010",
+      enunciado: "¿Pregunta de ejemplo 10?",
+      nombre: "Pregunta de ejemplo",
+      descripcion: "Pregunta de ejemplo para rellenar la tabla.",
+      opciones: [
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Ej.",
+            descripcion: "Ejemplo",
+          }
+        },
+        {
+          valor: 0,
+          opcion: {
+            nombre: "Re.",
+            descripcion: "Relleno",
+          }
+        },
+        {
+          valor: 10,
+          opcion: {
+            nombre: "Messi",
+            descripcion: "Messi",
+          }
+        }
+      ],
+      factorId: 3,
+      opcionDeRespuestaId: 1,
+    },
   ], {
     include: [{
       association: Pregunta.Opciones,
@@ -164,7 +356,6 @@ export async function initDB(req, res){
     },
     {
       association: Pregunta.Factor,
-      include: [Factor.Competencia]
     },
     {
       association: Pregunta.OpcionDeRespuesta,
@@ -231,12 +422,19 @@ export async function initDB(req, res){
           estado: "activo",
           fechaInicio: Date.now(),
           clave: "AS12DF34",
+          registroEjecucion: {
+            fechaInicio: null,
+            fechaFin: null,
+          }
         },
         {
           estado: "completo",
-          fechaInicio: "2022-10-25 23:05:10.155-03",
-          fechaFin: "2022-11-05 23:05:10.155-03",
+          fechaFin: "2022-11-25 23:05:10.155-03",
           clave: "ZX12CV34",
+          registroEjecucion: {
+            fechaInicio: "2022-10-25 23:05:10.155-03",
+            fechaFin: "2022-11-05 23:05:10.155-03",
+          }
         },
       ]
     },
@@ -252,6 +450,10 @@ export async function initDB(req, res){
           fechaInicio: "2022-10-25 23:05:10.155-03",
           fechaFin: "2022-11-05 23:05:10.155-03",
           clave: "AS12DF34",
+          registroEjecucion: {
+            fechaInicio: null,
+            fechaFin: null,
+          }
         }
       ]
     },
@@ -261,10 +463,22 @@ export async function initDB(req, res){
       nombre: "Martin",
       apellido: "Rodriguez",
       nroCandidato: 149,
+      cuestionarios: [
+        {
+          estado: "enProceso",
+          fechaFin: "2022-12-31 23:05:10.155-03",
+          clave: "AS12DF34",
+          registroEjecucion: {
+            fechaInicio: "2022-11-25 23:05:10.155-03",
+            fechaFin: null,
+          }
+        }
+      ]
     }
   ], {
     include: [{
       association: Candidato.Cuestionarios,
+      include: Cuestionario.RegistroEjecucion,
     }]
   })
 

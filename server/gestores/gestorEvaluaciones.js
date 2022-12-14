@@ -1,5 +1,6 @@
 import { EvaluacionDAO } from "../dao/EvaluacionDAO.js";
 import { PreguntaDAO } from "../dao/PreguntaDAO.js";
+import { Cuestionario } from "../models/Cuestionario.js";
 import { Evaluacion } from "../models/Evaluacion.js";
 import { PonderacionClon } from "../models/PonderacionClon.js";
 import { PuestoClon } from "../models/PuestoClon.js";
@@ -37,6 +38,7 @@ export async function crearEvaluacion(req, res) {
       },
       {
         association: Evaluacion.Cuestionarios,
+        include: Cuestionario.RegistroEjecucion
       }],
     });
 

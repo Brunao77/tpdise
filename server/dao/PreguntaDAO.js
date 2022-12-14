@@ -1,6 +1,7 @@
 import { sequelize } from "../db/database.js";
 import { OpcionDeRespuesta } from "../models/OpcionDeRespuesta.js";
 import { Pregunta } from "../models/Pregunta.js";
+import { PreguntaClon } from "../models/PreguntaClon.js";
 import { Puntaje } from "../models/Puntaje.js";
 
 export class PreguntaDAO {
@@ -28,5 +29,22 @@ export class PreguntaDAO {
     return await preguntaClon.save({ 
         transaction: t,
       });
+  }
+  async getPreguntasClon(factor){
+    return await PreguntaClon.findAll({
+      where: {
+        factorId: factor
+      }
+    });
+  }
+  async insertRespuesta(respuesta, t){
+    try {
+      return await respuesta.save({
+        transaction: t,
+      });  
+    } catch (error) {
+      return error;
+    }
+    
   }
 }

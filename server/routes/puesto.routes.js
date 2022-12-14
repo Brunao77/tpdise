@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getPonderaciones, getPuestos, postPuesto } from "../gestores/gestorPuesto.js";
+import { buscarPuestos, getPonderaciones, getPuestos, postPuesto } from "../gestores/gestorPuesto.js";
 
 const router = Router();
 
@@ -9,6 +9,7 @@ router.get("/", getPuestos);
 router.get("/ponderaciones/:codigo", getPonderaciones);
 
 router.post("/", postPuesto);
+router.post("/buscar", buscarPuestos);
 
 router.delete("/", () => {
   console.log("delete puestos");

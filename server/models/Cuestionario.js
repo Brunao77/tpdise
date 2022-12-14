@@ -2,7 +2,8 @@ import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
 import { Bloque } from "./Bloque.js";
 import { ResultadoCompetencia } from "./ResultadoCompetencia.js";
-import { Candidato } from "./Candidato.js";
+import { Evaluacion } from "./Evaluacion.js";
+import { RegistroEjecucion } from "./RegistroEjecucion.js";
 
 export class Cuestionario extends Model {}
 
@@ -12,9 +13,6 @@ Cuestionario.init(
       type: DataTypes.STRING,
     },
     fechaFin: {
-      type: DataTypes.DATE,
-    },
-    fechaInicio: {
       type: DataTypes.DATE,
     },
     clave: {
@@ -32,5 +30,7 @@ Cuestionario.init(
   }
 );
 
-Cuestionario.Bloques = Cuestionario.hasMany(Bloque);
 Cuestionario.Resultados = Cuestionario.hasMany(ResultadoCompetencia, {foreignKey: "idCuestionario"});
+Cuestionario.Evaluacion = Cuestionario.belongsTo(Evaluacion);
+Evaluacion.Cuestionarios = Evaluacion.hasMany(Cuestionario);
+Cuestionario.RegistroEjecucion = Cuestionario.hasOne(RegistroEjecucion, {foreignKey: "cuestionarioId"});

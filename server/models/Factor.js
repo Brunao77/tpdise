@@ -1,6 +1,5 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
-import { Competencia } from "./Competencia.js";
 
 export class Factor extends Model {}
 
@@ -27,4 +26,3 @@ Factor.init(
   }
 );
 
-Factor.Competencia = Factor.belongsTo(Competencia);

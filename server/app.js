@@ -13,6 +13,7 @@ import competenciaRoutes from "./routes/competencia.routes.js";
 import loginRoutes from "./routes/login.routes.js";
 import candidatoRoutes from "./routes/candidato.routes.js";
 import evaluacionesRoutes from "./routes/evaluaciones.routes.js";
+import cuestionarioRoutes from "./routes/cuestionario.routes.js";
 
 // Middlewares
 app.use(morgan("dev"));
@@ -29,5 +30,6 @@ app.use("/api/competencia", competenciaRoutes);
 app.use("/api/login", loginRoutes);
 app.use("/api/candidato", candidatoRoutes);
 app.use("/api/evaluaciones", evaluacionesRoutes);
+app.use("/api/cuestionario", cuestionarioRoutes);
 
 export default app;

@@ -25,5 +25,4 @@ Evaluacion.init(
   }
 );
 
-Evaluacion.Cuestionarios = Evaluacion.hasMany(Cuestionario);
 Evaluacion.Puesto = Evaluacion.belongsTo(PuestoClon, {foreignKey: "id"});

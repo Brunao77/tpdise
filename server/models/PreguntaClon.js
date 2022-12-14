@@ -4,6 +4,8 @@ import { Pregunta } from "./Pregunta.js";
 import { PuntajeClon } from "./PuntajeClon.js";
 import { FactorClon } from "./FactorClon.js";
 import { OpcionDeRespuestaClon } from "./OpcionDeRespuestaClon.js";
+import { Respuesta } from "./Respuesta.js";
+import { Bloque } from "./Bloque.js";
 
 export class PreguntaClon extends Model {}
 
@@ -30,7 +32,8 @@ PreguntaClon.init(
   }
 );
 
-PreguntaClon.Respuesta = PreguntaClon.hasOne(PuntajeClon, {as: "respuesta", foreignKey: "idPregunta"});
+Bloque.Preguntas = Bloque.hasMany(PreguntaClon);
+PreguntaClon.Respuesta = PreguntaClon.hasOne(Respuesta, {as: "respuesta", foreignKey: "idPregunta"});
 PreguntaClon.Opciones = PreguntaClon.hasMany(PuntajeClon, {as: "opciones", foreignKey: "idPregunta"});
 PreguntaClon.Factor = PreguntaClon.belongsTo(FactorClon);
 PreguntaClon.OpcionDeRespuesta = PreguntaClon.belongsTo(OpcionDeRespuestaClon);

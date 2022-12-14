@@ -138,3 +138,10 @@ export async function crearPuestoClon(codigo) {
   }
  
 }
+
+export async function buscarPuestos(req, res) {
+  const puestoDAO = new PuestoDAO;
+  const puestos = await puestoDAO.buscarPuestos(req.body);
+
+  res.json(puestos);
+}

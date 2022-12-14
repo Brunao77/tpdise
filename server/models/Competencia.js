@@ -1,5 +1,6 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
+import { Factor } from "./Factor.js";
 
 export class Competencia extends Model {}
 
@@ -26,3 +27,5 @@ Competencia.init(
     }
   }
 );
+
+Competencia.Factores = Competencia.hasMany(Factor);

@@ -1,6 +1,7 @@
 import { sequelize } from "../db/database.js";
 import { DataTypes, Model } from "sequelize";
 import { PreguntaClon } from "./PreguntaClon.js"
+import { Cuestionario } from "./Cuestionario.js";
 
 export class Bloque extends Model {}
 
@@ -8,6 +9,9 @@ Bloque.init(
   {
     nroBloque: {
       type: DataTypes.INTEGER,
+    },
+    estado: {
+      type: DataTypes.STRING,
     },
   },
   {
@@ -21,4 +25,5 @@ Bloque.init(
   }
 );
 
-Bloque.Preguntas = Bloque.hasMany(PreguntaClon);
+Cuestionario.Bloques = Cuestionario.hasMany(Bloque);
+Bloque.Cuestionario = Bloque.belongsTo(Cuestionario);

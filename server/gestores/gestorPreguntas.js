@@ -14,6 +14,7 @@ export async function crearPreguntasClon(idFactor, factorClon){
       const opcionDeRespuesta = await preguntaDAO.getOpcionDeRespuesta(pregunta.opcionDeRespuestaId);
       const preguntaClon = new PreguntaClon(
         {
+          esClonDe: pregunta.id,
           enunciado: pregunta.enunciado,
           nombre: pregunta.nombre,
           descripcion: pregunta.descripcion,
