@@ -137,20 +137,24 @@ const Evaluar = () => {
           {sectionSelected === STATES.SEARCH ? (
             <>
               <form className="search" onSubmit={searchCandidatos}>
-                <Input
-                  placeholder="Nombre"
-                  name="nombre"
-                  value={form.nombre}
-                  onChange={handleChange}
-                  err={errors.nombre}
-                />
-                <Input
-                  placeholder="Apellido"
-                  name="apellido"
-                  value={form.apellido}
-                  onChange={handleChange}
-                  err={errors.apellido}
-                />
+                <div className="inpt-cont">
+                  <Input
+                    placeholder="Nombre"
+                    name="nombre"
+                    value={form.nombre}
+                    onChange={handleChange}
+                    err={errors.nombre}
+                  />
+                </div>
+                <div className="inpt-cont">
+                  <Input
+                    placeholder="Apellido"
+                    name="apellido"
+                    value={form.apellido}
+                    onChange={handleChange}
+                    err={errors.apellido}
+                  />
+                </div>
                 <input
                   type="number"
                   name="nroCandidato"
@@ -160,7 +164,9 @@ const Evaluar = () => {
                   value={form.nroCandidato}
                   onChange={handleChange}
                 />
-                <Button bgcolor={colors.primary}>BUSCAR</Button>
+                <div className="btn-search-cont">
+                  <Button bgcolor={colors.primary}>BUSCAR</Button>
+                </div>
               </form>
               {data.length === 0 ? (
                 <h1>No existen candidatos</h1>
@@ -249,6 +255,13 @@ const Evaluar = () => {
         </section>
       </Layout>
       <style jsx>{`
+        .btn-search-cont {
+          width: 200px;
+        }
+        .inpt-cont {
+          width: 300px;
+          height: 100%;
+        }
         .container {
           display: flex;
           flex-direction: column;
@@ -261,7 +274,6 @@ const Evaluar = () => {
           outline: none;
           padding: 5px;
           font-weight: 600;
-          width: 100%;
           height: 95%;
           border: 1px solid ${colors.black};
         }
@@ -284,6 +296,7 @@ const Evaluar = () => {
           display: flex;
           gap: 20px;
           width: 100%;
+          align-items: center;
           justify-content: center;
           height: 40px;
         }
