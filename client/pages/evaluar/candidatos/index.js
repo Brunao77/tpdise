@@ -2,8 +2,23 @@ import Layout from "../../../components/Layout";
 import Dropdown from "../../../components/Dropdown";
 import Button from "../../../components/Button";
 import { colors } from "../../../styles";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const EvaluarCandidatos = () => {
+  const router = useRouter();
+  const [candidatos, setCandidatos] = useState([]);
+
+  useEffect(() => {
+    const { query } = router;
+    if (!query.candidatos) {
+      router.push("/evaluar");
+    } else {
+      const newCandidatos = JSON.parse(query.candidatos);
+      setCandidatos(newCandidatos);
+    }
+  }, []);
+
   return (
     <>
       <Layout title="EVALUAR CANDIDATOS">

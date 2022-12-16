@@ -3,6 +3,7 @@ import Layout from "../../components/Layout";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import { colors } from "../../styles";
+import { useRouter } from "next/router";
 
 const STATES = {
   SEARCH: 0,
@@ -26,7 +27,8 @@ const Evaluar = () => {
     nroCandidato: "",
   });
   const [errors, setErrors] = useState({});
-  console.log(candidatos);
+  const [eliminados, setEliminados] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     const loadData = async () => {
@@ -111,6 +113,32 @@ const Evaluar = () => {
         )
       );
       setSortData(sortData);
+    }
+  };
+
+  const handleSiguienteAEvaluar = async () => {
+    const listNumberCand = candidatos.map((cand) =>
+      parseInt(cand.nroCandidato)
+    );
+    const response = await fetch(
+      "http://localhost:3000/api/candidato/verificar",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(listNumberCand),
+      }
+    );
+    const res = await response.json();
+    if (res.eliminados.length !== 0) {
+      setEliminados(res.eliminados);
+    } else {
+      router.push(
+        {
+          pathname: "/evaluar/candidatos",
+          query: { candidatos: JSON.stringify(candidatos) },
+        },
+        "evaluar/candidatos"
+      );
     }
   };
 
@@ -228,7 +256,14 @@ const Evaluar = () => {
                 </thead>
                 <tbody>
                   {candidatos.map((candidato, index) => (
-                    <tr key={index} onClick={() => selectCandidato(index)}>
+                    <tr
+                      key={index}
+                      className={
+                        eliminados.includes(candidato.nroCandidato) &&
+                        "isEliminado"
+                      }
+                      onClick={() => selectCandidato(index)}
+                    >
                       <td>{candidato.nombre}</td>
                       <td>{candidato.apellido}</td>
                       <td>{candidato.nroCandidato}</td>
@@ -244,6 +279,11 @@ const Evaluar = () => {
                 </tbody>
               </table>
               <div className="btn-section">
+                {eliminados.length !== 0 && (
+                  <span className="info-footer">
+                    Candidatos que tienen cuestionarios activos o en proceso.
+                  </span>
+                )}
                 <div className="btn-cont">
                   <Button
                     bgcolor={colors.secondary}
@@ -253,7 +293,12 @@ const Evaluar = () => {
                   </Button>
                 </div>
                 <div className="btn-cont">
-                  <Button bgcolor={colors.primary}>SIGUIENTE</Button>
+                  <Button
+                    bgcolor={colors.primary}
+                    onClick={() => handleSiguienteAEvaluar()}
+                  >
+                    SIGUIENTE
+                  </Button>
                 </div>
               </div>
             </>
@@ -261,6 +306,14 @@ const Evaluar = () => {
         </section>
       </Layout>
       <style jsx>{`
+        .info-footer {
+          color: #ff6f6f;
+          font-size: 20px;
+          font-weight: 600;
+        }
+        .isEliminado {
+          background: #ffc6c6;
+        }
         .btn-search-cont {
           width: 200px;
         }
