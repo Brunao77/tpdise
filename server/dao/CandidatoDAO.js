@@ -1,84 +1,63 @@
 import { Candidato } from "../models/Candidato.js";
-import { Op } from "sequelize"; 
+import { Op } from "sequelize";
 import { sequelize } from "../db/database.js";
 
 export class CandidatoDAO {
-  async getCandidatos(params){
+  async getCandidatos() {
     try {
-      const { nombre, apellido, nroCandidato } = params
-      let filtro = [];
-      if(nombre)filtro.push({
-        nombre: {
-          [Op.like]: "%" + nombre + "%"
-        }
-      });
-      if(apellido)filtro.push({
-        apellido: {
-          [Op.like]: "%" + apellido + "%"
-        }
-      });
-      if(nroCandidato)filtro.push({nroCandidato});
-
-      const candidatos = await Candidato.findAll({
-        where: {
-          [Op.or]: filtro
-        },
-      });
+      const candidatos = await Candidato.findAll();
 
       return candidatos;
     } catch (error) {
       return error;
     }
-    
   }
 
-  async getCandidato(params){
-    const { tipoDoc, documento, clave} = params;
+  async getCandidato(params) {
+    const { tipoDoc, documento, clave } = params;
 
     return await Candidato.findOne({
       where: {
         tipoDoc,
-        documento
+        documento,
       },
       include: {
         association: Candidato.Cuestionarios,
         where: {
           clave,
           estado: {
-            [Op.or]: ["activo", "enProceso"]
-          }
-        }
+            [Op.or]: ["activo", "enProceso"],
+          },
+        },
       },
     });
   }
 
-  async guardarCandidato(candidato){
+  async guardarCandidato(candidato) {
     return await sequelize.transaction(async (t) => {
-      await candidato.save({ 
+      await candidato.save({
         transaction: t,
       });
     });
   }
 
-  async getCuestionarios(nroCandidato){
+  async getCuestionarios(nroCandidato) {
     try {
       return await Candidato.findOne({
         where: {
-          nroCandidato
+          nroCandidato,
         },
         include: {
           association: Candidato.Cuestionarios,
           where: {
             estado: {
-              [Op.or]: ["activo", "enProceso"]
-            }
-          }
+              [Op.or]: ["activo", "enProceso"],
+            },
+          },
         },
-      })
-      
-    }catch (error) {
+      });
+    } catch (error) {
       return error;
     }
   }
-
 }

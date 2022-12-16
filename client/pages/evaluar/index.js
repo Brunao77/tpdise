@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Layout from "../../components/Layout";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
@@ -15,30 +15,10 @@ const Columns = [
   { Header: "NRO CANDIDATO", accessor: "nroCandidato" },
   { Header: "", accessor: "select" },
 ];
-
-const DataRef = [
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-  { nombre: "DARIO", apellido: "INSUA", nroCandidato: 2400, selected: false },
-];
-
 const Evaluar = () => {
   const [sectionSelected, setSectionSelected] = useState(STATES.SEARCH);
   const [data, setData] = useState([]);
+  const [sortData, setSortData] = useState([]);
   const [candidatos, setCandidatos] = useState([]);
   const [form, setForm] = useState({
     nombre: "",
@@ -46,7 +26,19 @@ const Evaluar = () => {
     nroCandidato: "",
   });
   const [errors, setErrors] = useState({});
-  console.log(data);
+  console.log(candidatos);
+
+  useEffect(() => {
+    const loadData = async () => {
+      const response = await fetch("http://localhost:3000/api/candidato");
+      const res = await response.json();
+      const newData = res.map((dato) => {
+        return { ...dato, selected: false };
+      });
+      setData(newData);
+    };
+    loadData();
+  }, []);
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -56,17 +48,18 @@ const Evaluar = () => {
     });
   };
 
-  const selectData = (index) => {
-    const newData = data.map((dato, i) => {
-      if (i === index) return { ...dato, selected: !dato.selected };
+  const selectData = (nroCandidato) => {
+    const newData = data.map((dato) => {
+      if (dato.nroCandidato === nroCandidato)
+        return { ...dato, selected: !dato.selected };
       return dato;
     });
     setData(newData);
   };
 
   const addCandidato = () => {
-    const candidatos = data.filter((dato) => dato.selected === true);
-    setCandidatos(candidatos);
+    const newCandidatos = data.filter((dato) => dato.selected === true);
+    setCandidatos(newCandidatos.map((cand) => ({ ...cand, selected: false })));
   };
 
   const selectCandidato = (index) => {
@@ -78,7 +71,7 @@ const Evaluar = () => {
   };
 
   const removeCandidato = () => {
-    const newCandidatos = candidatos.filter((dato) => dato.selected === true);
+    const newCandidatos = candidatos.filter((dato) => dato.selected === false);
     setCandidatos(newCandidatos);
   };
 
@@ -88,6 +81,14 @@ const Evaluar = () => {
       err.nombre = "Nombre tener menos de 50 carácteres";
     if (form.apellido.length > 50)
       err.apellido = "Apellido tener menos de 50 carácteres";
+    if (
+      form.apellido.length === 0 &&
+      form.nombre.length === 0 &&
+      form.nroCandidato.length === 0
+    ) {
+      err.nombre = "Nombre está vacío";
+      err.apellido = "Apellido está vacío";
+    }
     setErrors(err);
     return err;
   };
@@ -96,21 +97,20 @@ const Evaluar = () => {
     e.preventDefault();
     const err = formValidate();
     if (JSON.stringify(err) === "{}") {
-      const newData = DataRef.filter((dato) => {
-        !form.nombre &&
-          dato.nombre.includes(form.nombre) &&
-          !form.apellido &&
-          dato.apellido.includes(form.apellido) &&
-          !form.nroCandidato &&
-          dato.nroCandidato === form.nroCandidato;
-      });
+      // Haces un array de entries del objeto `form` y sacas los vacíos
+      const filters = Object.entries(form).filter(
+        ([key, value]) => value !== ""
+      );
 
-      /*DataRef.filter((dato) => {
-        if (!form.nombre) return dato.nombre.includes(form.nombre);
-        if (!form.apellido) return dato.apellido.includes(form.apellido);
-        if (!form.nroCandidato) return dato.nroCandidato === form.nroCandidato;
-      });*/
-      setData(newData);
+      // Usas ese array de entries para aplicar los filtros:
+      const sortData = data.filter((item) =>
+        filters.every(([key, value]) =>
+          key !== "nroCandidato"
+            ? item[key].includes(value)
+            : item[key] == value
+        )
+      );
+      setSortData(sortData);
     }
   };
 
@@ -168,7 +168,7 @@ const Evaluar = () => {
                   <Button bgcolor={colors.primary}>BUSCAR</Button>
                 </div>
               </form>
-              {data.length === 0 ? (
+              {sortData.length === 0 ? (
                 <h1>No existen candidatos</h1>
               ) : (
                 <>
@@ -181,8 +181,14 @@ const Evaluar = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {data.map((dato, index) => (
-                        <tr key={index} onClick={() => selectData(index)}>
+                      {sortData.map((dato, index) => (
+                        <tr
+                          key={index}
+                          onClick={() => {
+                            selectData(dato.nroCandidato);
+                            dato.selected = !dato.selected;
+                          }}
+                        >
                           <td>{dato.nombre}</td>
                           <td>{dato.apellido}</td>
                           <td>{dato.nroCandidato}</td>
@@ -208,7 +214,7 @@ const Evaluar = () => {
                 </>
               )}
             </>
-          ) : candidatos ? (
+          ) : candidatos.length === 0 ? (
             <h1>Se debe seleccionar 1 o más candidatos</h1>
           ) : (
             <>
