@@ -142,7 +142,7 @@ const newPuesto = ({ competencias }) => {
         empresa,
         competencias: competencias.map((competencia) => {
           return {
-            codigo: competencia.codigo,
+            codigo: competencia.id,
             ponderacion: competencia.ponderacion,
           };
         }),

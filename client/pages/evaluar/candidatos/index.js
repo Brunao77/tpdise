@@ -77,7 +77,7 @@ const EvaluarCandidatos = () => {
     setPonderaciones(res.ponderaciones);
   };
 
-  const handleSiguiente = () => {
+  const handleSiguiente = async () => {
     let err = {};
     const arr = ponderaciones.find(
       (ponderacion) => ponderacion.esEvaluable === false
@@ -86,11 +86,20 @@ const EvaluarCandidatos = () => {
     if (!form.puesto) err.puesto = "No selecciono puesto";
     if (!form.empresa) err.empresa = "No selecciono empresa";
     setErrors(err);
+    
+    const response = await fetch("http://localhost:3000/api/evaluaciones/claves", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(JSON.parse(router.query.candidatos)),
+    });
+    const res = await response.json();
+    console.log(res);
+
     if (Object.keys(err).length === 0) {
       router.push(
         {
           pathname: "/evaluar/candidatos/finalizar",
-          query: { candidatos: router.query.candidatos },
+          query: { candidatos: JSON.stringify(res), puesto: JSON.stringify(form.puesto) },
         },
         "evaluar/candidatos"
       );

@@ -10,6 +10,7 @@ export async function loginCandidato(req, res) {
       if(!candidato) throw new Error("datos incorrectos o no hay cuestionarios asociados.");
       else {
         req.session.isLoggedIn = true;
+        req.session.typeUsr = "candidato";
         req.session.usuario = candidato;
         
         res.status(200).json(req.session);
@@ -30,6 +31,7 @@ export async function loginConsultor(req, res) {
     });
     if(consultor && consultor.password === password){
       req.session.isLoggedIn = true;
+      req.session.typeUsr = "consultor";
       req.session.usuario = consultor;
       console.log(req.session);
       res.status(200).json(req.session);
@@ -39,6 +41,11 @@ export async function loginConsultor(req, res) {
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
+}
+
+export function getSession(req, res) {
+  if(req.session.isLoggedIn)res.json(true);
+  else res.json(false);
 }
 
 export async function addConsultor(req, res) {

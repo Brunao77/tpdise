@@ -7,14 +7,29 @@ import { useEffect, useState } from "react";
 const Finalizar = () => {
   const router = useRouter();
   const [candidatos, setCandidatos] = useState([]);
+  const [puesto, setPuesto] = useState("");
 
   useEffect(() => {
     setCandidatos(JSON.parse(router.query.candidatos));
+    setPuesto(JSON.parse(router.query.puesto))
   }, []);
 
   const handleCancelar = () => {
     router.push("/evaluar");
   };
+
+  const handleFinalizar = async () => {
+    const claves = candidatos.map((c) => {
+      return {candidato: c.nroCandidato, clave: c.clave};
+    });
+    const response = await fetch("http://localhost:3000/api/evaluaciones/new", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({codigoPuesto: puesto, claves}),
+      });
+      const res = await response.json();
+      console.log(res);
+  }
   return (
     <>
       <Layout title="EVALUAR CANDIDATOS">
@@ -36,7 +51,7 @@ const Finalizar = () => {
                   <td>{candidato.apellido}</td>
                   <td>{candidato.tipoDoc}</td>
                   <td>{candidato.documento}</td>
-                  <td>Algun Clave</td>
+                  <td>{candidato.clave}</td>
                 </tr>
               );
             })}
@@ -49,7 +64,7 @@ const Finalizar = () => {
             </Button>
           </div>
           <div className="btn-cont">
-            <Button bgcolor={colors.primary}>FINALIZAR</Button>
+            <Button bgcolor={colors.primary} onClick={handleFinalizar}>FINALIZAR</Button>
           </div>
         </footer>
       </Layout>

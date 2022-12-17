@@ -12,8 +12,8 @@ export function generarClave(req, res) {
     const candidatos = req.body;
 
     const claves = candidatos.map((candidato) => {
-      const clave = Array.from(Array(8), () => Math.floor(Math.random() * 36).toString(36)).join('');
-      return {candidato, clave};
+      candidato.clave = Array.from(Array(8), () => Math.floor(Math.random() * 36).toString(36)).join('');
+      return candidato;
     });
     res.json(claves)
   } catch (error) {
