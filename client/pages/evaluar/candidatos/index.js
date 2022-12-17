@@ -7,18 +7,96 @@ import { useEffect, useState } from "react";
 
 const EvaluarCandidatos = () => {
   const router = useRouter();
-  const [candidatos, setCandidatos] = useState([]);
+  const [puestos, setPuestos] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
+  const [puestosSort, setPuestosSort] = useState([]);
+  const [empresasSort, setEmpresasSort] = useState([]);
+  const [form, setForm] = useState({
+    empresa: "",
+    puesto: "",
+  });
+  const [ponderaciones, setPonderaciones] = useState([]);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const { query } = router;
     if (!query.candidatos) {
       router.push("/evaluar");
     } else {
-      const newCandidatos = JSON.parse(query.candidatos);
-      setCandidatos(newCandidatos);
+      const loadPuestos = async () => {
+        const response = await fetch("http://localhost:3000/api/puesto");
+        const res = await response.json();
+        setPuestos(res);
+        const newEmpresas = puestos.reduce((acc, item) => {
+          if (!acc.includes(item.empresa)) {
+            acc.push(item.empresa);
+          }
+          return acc;
+        }, []);
+        setEmpresas(newEmpresas);
+        setPuestosSort(res);
+        setEmpresasSort(newEmpresas);
+      };
+      loadPuestos();
     }
   }, []);
 
+  const handleEmpresa = (e) => {
+    setPonderaciones([]);
+    if (!e) {
+      setForm({ ...form, empresa: "" });
+      return setPuestosSort(puestos);
+    }
+    setForm({ ...form, empresa: e });
+    const newPuestos = puestos.filter((puesto) => puesto.empresa === e);
+    setPuestosSort(newPuestos);
+  };
+
+  const handlePuesto = (e) => {
+    setPonderaciones([]);
+    if (!e) {
+      setForm({ ...form, puesto: "" });
+      return setEmpresasSort(empresas);
+    }
+    setForm({ ...form, puesto: e.codigo });
+    const newEmpresas = puestos.reduce((acc, item) => {
+      if (item.nombre === e.nombre && !acc.includes(item.empresa)) {
+        acc.push(item.empresa);
+      }
+      return acc;
+    }, []);
+    setEmpresasSort(newEmpresas);
+  };
+
+  const handleSearch = async () => {
+    if (!form.puesto) return;
+    const response = await fetch(
+      `http://localhost:3000/api/puesto/ponderaciones/${form.puesto}`
+    );
+    const res = await response.json();
+    setPonderaciones(res.ponderaciones);
+  };
+
+  const handleSiguiente = () => {
+    let err = {};
+    const arr = ponderaciones.find(
+      (ponderacion) => ponderacion.esEvaluable === false
+    );
+    if (arr) err.ponderaciones = "Existen competencias no evaluables";
+    if (!form.puesto) err.puesto = "No selecciono puesto";
+    if (!form.empresa) err.empresa = "No selecciono empresa";
+    setErrors(err);
+    if (Object.keys(err).length === 0) {
+      router.push(
+        {
+          pathname: "/evaluar/candidatos/finalizar",
+          query: { candidatos: router.query.candidatos },
+        },
+        "evaluar/candidatos"
+      );
+    }
+  };
+  console.log(ponderaciones);
   return (
     <>
       <Layout title="EVALUAR CANDIDATOS">
@@ -27,18 +105,36 @@ const EvaluarCandidatos = () => {
             Seleccione la empresa y el puesto para el que desea evaluar a los
             candidatos seleccionados
           </span>
-          <div className="dropdown-container">
-            <div className="dropdown">
-              <Dropdown placeholder="Empresa" name="empresa" dataKey="codigo" />
+          <section className="cont-search">
+            <div className="dropdown-container">
+              <div className="dropdown">
+                <Dropdown
+                  placeholder="Funcion/Puesto"
+                  data={puestosSort}
+                  textField="nombre"
+                  name="funcion"
+                  dataKey="codigo"
+                  onChange={(e) => handlePuesto(e)}
+                  err={errors.puesto}
+                />
+              </div>
+              <div className="dropdown">
+                <Dropdown
+                  placeholder="Empresa"
+                  data={empresasSort}
+                  name="empresa"
+                  onChange={(e) => handleEmpresa(e)}
+                  err={errors.empresa}
+                />
+              </div>
             </div>
-            <div className="dropdown">
-              <Dropdown
-                placeholder="Funcion/Puesto"
-                name="funcion"
-                dataKey="codigo"
-              />
+
+            <div className="btn-search-cont">
+              <Button bgcolor={colors.primary} onClick={() => handleSearch()}>
+                BUSCAR
+              </Button>
             </div>
-          </div>
+          </section>
           <div className="table-container">
             <table>
               <thead>
@@ -48,33 +144,53 @@ const EvaluarCandidatos = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>Algun competencia</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>Algun competencia</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>Algun competencia</td>
-                  <td>10</td>
-                </tr>
-                <tr>
-                  <td>Algun competencia</td>
-                  <td>10</td>
-                </tr>
+                {ponderaciones.map((ponderacion, index) => {
+                  return (
+                    <tr
+                      key={index}
+                      className={!ponderacion.esEvaluable && "notValuable"}
+                    >
+                      <td>{ponderacion.competencia.nombre}</td>
+                      <td>{ponderacion.valor}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
           <div className="footer">
+            {errors.ponderaciones && (
+              <span className="err-info">{err.ponderaciones}</span>
+            )}
             <div className="button-container">
-              <Button bgcolor={colors.primary}>SIGUIENTE</Button>
+              <Button bgcolor={colors.primary} onClick={handleSiguiente}>
+                SIGUIENTE
+              </Button>
             </div>
           </div>
         </section>
       </Layout>
       <style jsx>{`
+        .err-info {
+          color: #ff6f6f;
+          font-size: 20px;
+          font-weight: 600;
+        }
+        .notValuable {
+          background: #ffc6c6;
+        }
+        .cont-search {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          margin: 20px;
+        }
+        .btn-search-cont {
+          width: 150px;
+          height: 20px;
+        }
         .container {
           width: 100%;
           height: 100%;
@@ -96,9 +212,12 @@ const EvaluarCandidatos = () => {
         }
         .footer {
           display: flex;
+          align-items: center;
+          gap: 50px;
           justify-content: end;
           padding-right: 200px;
         }
+
         .button-container {
           width: 200px;
         }

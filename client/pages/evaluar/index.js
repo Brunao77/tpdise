@@ -281,7 +281,8 @@ const Evaluar = () => {
               <div className="btn-section">
                 {eliminados.length !== 0 && (
                   <span className="info-footer">
-                    Candidatos que tienen cuestionarios activos o en proceso.
+                    Hay candidatos que tienen cuestionarios activos o en
+                    proceso.
                   </span>
                 )}
                 <div className="btn-cont">

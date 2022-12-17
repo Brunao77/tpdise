@@ -20,6 +20,7 @@ const Button = ({ children, onClick, bgcolor }) => {
           border: none;
           cursor: pointer;
           width: 100%;
+          height: 100%;
         }
         button:active {
           transform: scale(97%);

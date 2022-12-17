@@ -1,8 +1,20 @@
 import Layout from "../../../components/Layout";
 import Button from "../../../components/Button";
 import { colors } from "../../../styles";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const Finalizar = () => {
+  const router = useRouter();
+  const [candidatos, setCandidatos] = useState([]);
+
+  useEffect(() => {
+    setCandidatos(JSON.parse(router.query.candidatos));
+  }, []);
+
+  const handleCancelar = () => {
+    router.push("/evaluar");
+  };
   return (
     <>
       <Layout title="EVALUAR CANDIDATOS">
@@ -17,32 +29,24 @@ const Finalizar = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Algun Nombre</td>
-              <td>Algun Apellido</td>
-              <td>DNI</td>
-              <td>4444444</td>
-              <td>Algun Clave</td>
-            </tr>
-            <tr>
-              <td>Algun Nombre</td>
-              <td>Algun Apellido</td>
-              <td>DNI</td>
-              <td>4444444</td>
-              <td>Algun Clave</td>
-            </tr>
-            <tr>
-              <td>Algun Nombre</td>
-              <td>Algun Apellido</td>
-              <td>DNI</td>
-              <td>4444444</td>
-              <td>Algun Clave</td>
-            </tr>
+            {candidatos.map((candidato) => {
+              return (
+                <tr>
+                  <td>{candidato.nombre}</td>
+                  <td>{candidato.apellido}</td>
+                  <td>{candidato.tipoDoc}</td>
+                  <td>{candidato.documento}</td>
+                  <td>Algun Clave</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <footer>
           <div className="btn-cont">
-            <Button bgcolor={colors.secondary}>CANCELAR</Button>
+            <Button bgcolor={colors.secondary} onClick={handleCancelar}>
+              CANCELAR
+            </Button>
           </div>
           <div className="btn-cont">
             <Button bgcolor={colors.primary}>FINALIZAR</Button>
