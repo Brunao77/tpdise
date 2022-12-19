@@ -3,15 +3,18 @@ import Button from "../../../components/Button";
 import { colors } from "../../../styles";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Modal from "../../../components/Modal";
+import ModalFinalizar from "../../../components/ModalFinalizar";
 
 const Finalizar = () => {
   const router = useRouter();
   const [candidatos, setCandidatos] = useState([]);
   const [puesto, setPuesto] = useState("");
+  const [success, setSucces] = useState(false);
 
   useEffect(() => {
     setCandidatos(JSON.parse(router.query.candidatos));
-    setPuesto(JSON.parse(router.query.puesto))
+    setPuesto(JSON.parse(router.query.puesto));
   }, []);
 
   const handleCancelar = () => {
@@ -20,16 +23,16 @@ const Finalizar = () => {
 
   const handleFinalizar = async () => {
     const claves = candidatos.map((c) => {
-      return {candidato: c.nroCandidato, clave: c.clave};
+      return { candidato: c.nroCandidato, clave: c.clave };
     });
     const response = await fetch("http://localhost:3000/api/evaluaciones/new", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({codigoPuesto: puesto, claves}),
-      });
-      const res = await response.json();
-      console.log(res);
-  }
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ codigoPuesto: puesto, claves }),
+    });
+    const res = await response.json();
+    setSucces(true);
+  };
   return (
     <>
       <Layout title="EVALUAR CANDIDATOS">
@@ -64,9 +67,12 @@ const Finalizar = () => {
             </Button>
           </div>
           <div className="btn-cont">
-            <Button bgcolor={colors.primary} onClick={handleFinalizar}>FINALIZAR</Button>
+            <Button bgcolor={colors.primary} onClick={handleFinalizar}>
+              FINALIZAR
+            </Button>
           </div>
         </footer>
+        {success && <ModalFinalizar></ModalFinalizar>}
       </Layout>
       <style jsx>{`
         footer {
