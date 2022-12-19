@@ -13,7 +13,9 @@ const Login = () => {
     clave: "",
     nombre: "",
     password: "",
-  })
+  });
+  const [load, setLoad] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { value, name } = e.target;
@@ -24,32 +26,41 @@ const Login = () => {
   };
 
   const ingresar = async () => {
+    setLoad(true);
     const data = {
       tipoDoc: form.tipoDoc,
       documento: form.documento,
       clave: form.clave,
       nombre: form.nombre,
       password: form.password,
-    }
-    const response = await fetch(`http://localhost:3000/api/login/${menuSession}`, {
+    };
+    const response = await fetch(
+      `http://localhost:3000/api/login/${menuSession}`,
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
-      });
-      const res = await response.json();
-      console.log(res)
-      if(res && !res.error){
-        if(menuSession === "candidato") router.push({
-          pathname: "/cuestionario/",
+      }
+    );
+    const res = await response.json();
+    if (res.message) return setError(res.message);
+    console.log(res);
+    if (res && !res.message) {
+      if (menuSession === "candidato")
+        router.push({
+          pathname: "/cuestionario",
           query: { candidato: JSON.stringify(res.usuario) },
         });
-        else router.push({
+      else
+        router.push(
+          {
             pathname: "/",
             query: { consultor: JSON.stringify(res.usuario) },
-          }, "/");
-      }
-      
-  }
+          },
+          "/"
+        );
+    }
+  };
 
   return (
     <>
@@ -57,7 +68,20 @@ const Login = () => {
         <section>
           {menuSession !== "" ? (
             <header>
-              <img src="/back.svg" onClick={() => setMenuSession("")} />
+              <img
+                src="/back.svg"
+                onClick={() => {
+                  setForm({
+                    tipoDoc: "",
+                    documento: "",
+                    clave: "",
+                    nombre: "",
+                    password: "",
+                  });
+                  setError("");
+                  return setMenuSession("");
+                }}
+              />
               <h1>CAPIT@L HUMANO</h1>
             </header>
           ) : (
@@ -67,18 +91,22 @@ const Login = () => {
             <>
               <h4>Seleccione una opción para inciar sesión</h4>
               <div className="cont-btn">
-                <Button
-                  bgcolor={colors.primary}
-                  onClick={() => setMenuSession("consultor")}
-                >
-                  CONSULTOR
-                </Button>
-                <Button
-                  bgcolor={colors.primary}
-                  onClick={() => setMenuSession("candidato")}
-                >
-                  CUESTIONARIO
-                </Button>
+                <div className="btn">
+                  <Button
+                    bgcolor={colors.primary}
+                    onClick={() => setMenuSession("consultor")}
+                  >
+                    CONSULTOR
+                  </Button>
+                </div>
+                <div className="btn">
+                  <Button
+                    bgcolor={colors.primary}
+                    onClick={() => setMenuSession("candidato")}
+                  >
+                    CUESTIONARIO
+                  </Button>
+                </div>
               </div>
             </>
           )}
@@ -87,21 +115,32 @@ const Login = () => {
               <h4>Ingrese sus datos para acceder como Consultor</h4>
               <div className="cont-btn">
                 <div className="cont-input">
-                  <Input 
-                    placeholder="Usuario" 
+                  <Input
+                    placeholder="Usuario"
                     name="nombre"
-                    value={form.nombre} 
-                    onChange={handleChange}/>
+                    value={form.nombre}
+                    onChange={handleChange}
+                  />
                 </div>
                 <div className="cont-input">
-                  <Input 
-                    placeholder="Contraseña" 
-                    type="password" 
+                  <Input
+                    placeholder="Contraseña"
+                    type="password"
                     name="password"
-                    value={form.password} 
-                    onChange={handleChange}/>
+                    value={form.password}
+                    onChange={handleChange}
+                  />
                 </div>
-                <Button bgcolor={colors.primary} onClick={ingresar}>INGRESAR</Button>
+                {error && <span className="err-info">{error}</span>}
+                <div className="btn">
+                  <Button
+                    bgcolor={colors.primary}
+                    onClick={ingresar}
+                    disabled={load}
+                  >
+                    INGRESAR
+                  </Button>
+                </div>
               </div>
             </>
           )}
@@ -110,7 +149,12 @@ const Login = () => {
               <h4>Ingrese sus datos para acceder a un Cuestionario</h4>
               <div className="cont-btn">
                 <div className="first-cont">
-                  <select className="tipo-inp" name="tipoDoc" value={form.tipoDoc} onChange={handleChange}>
+                  <select
+                    className="tipo-inp"
+                    name="tipoDoc"
+                    value={form.tipoDoc}
+                    onChange={handleChange}
+                  >
                     <option hidden selected>
                       Tipo
                     </option>
@@ -119,19 +163,41 @@ const Login = () => {
                     <option value="CUIL">CUIL</option>
                   </select>
                   <div className="cont-input-nro">
-                    <Input placeholder="Numero de documento" name="documento" value={form.documento} onChange={handleChange}/>
+                    <Input
+                      placeholder="Numero de documento"
+                      name="documento"
+                      value={form.documento}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
                 <div className="cont-input">
-                  <Input placeholder="Clave" type="password" name="clave" value={form.clave} onChange={handleChange}/>
+                  <Input
+                    placeholder="Clave"
+                    type="password"
+                    name="clave"
+                    value={form.clave}
+                    onChange={handleChange}
+                  />
                 </div>
-                <Button bgcolor={colors.primary} onClick={ingresar}>INGRESAR</Button>
+                <div className="btn">
+                  <Button bgcolor={colors.primary} onClick={ingresar}>
+                    INGRESAR
+                  </Button>
+                </div>
               </div>
             </>
           )}
         </section>
       </main>
       <style jsx>{`
+        .err-info {
+          color: #ff6f6f;
+        }
+        .btn {
+          width: 200px;
+          height: 70px;
+        }
         .first-cont {
           display: flex;
           gap: 10px;

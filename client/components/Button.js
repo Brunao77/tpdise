@@ -1,9 +1,11 @@
 import { colors } from "../styles";
 
-const Button = ({ children, onClick, bgcolor }) => {
+const Button = ({ children, onClick, bgcolor, disabled }) => {
   return (
     <>
-      <button onClick={onClick}>{children}</button>
+      <button onClick={onClick} disabled={disabled}>
+        {children}
+      </button>
       <style jsx>{`
         button {
           display: flex;
