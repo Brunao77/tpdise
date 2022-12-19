@@ -371,7 +371,7 @@ export async function initDB(req, res) {
     [
       {
         codigo: "P001",
-        nombre: "Puesto 1",
+        nombre: "PUESTO 1",
         descripcion: "Puesto de ejemplo para rellenar la tabla.",
         empresa: "E001",
         ponderaciones: [
@@ -387,7 +387,7 @@ export async function initDB(req, res) {
       },
       {
         codigo: "P002",
-        nombre: "Puesto 2",
+        nombre: "PUESTO 2",
         descripcion: "Puesto de ejemplo para rellenar la tabla.",
         empresa: "E002",
         ponderaciones: [
@@ -399,7 +399,7 @@ export async function initDB(req, res) {
       },
       {
         codigo: "P003",
-        nombre: "Puesto 3",
+        nombre: "PUESTO 3",
         descripcion: "Puesto de ejemplo para rellenar la tabla.",
         empresa: "E002",
         ponderaciones: [

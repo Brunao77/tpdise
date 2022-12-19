@@ -245,13 +245,18 @@ const newPuesto = ({ competencias }) => {
           <ButtonLink bgcolor={colors.secondary} href="/puesto">
             CANCELAR
           </ButtonLink>
-          <Button bgcolor={colors.primary} onClick={handleAceptButton}>
-            ACEPTAR
-          </Button>
+          <div className="btn">
+            <Button bgcolor={colors.primary} onClick={handleAceptButton}>
+              ACEPTAR
+            </Button>
+          </div>
         </div>
         {success && <Modal />}
       </Layout>
       <style jsx>{`
+        .btn {
+          width: 200px;
+        }
         input {
           border-radius: 10px;
           outline: none;
