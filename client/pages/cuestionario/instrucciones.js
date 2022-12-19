@@ -1,12 +1,30 @@
 import Router, { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Button from "../../components/Button";
 import { colors } from "../../styles";
 
 const Instrucciones = () => {
   const router = useRouter();
-  const handleAccept = () => {
+  const [candidato, setCandidato] = useState()
+
+  useEffect(() => {
+    const { query } = router;
+    setCandidato(query.candidato)
+    
+  }, []);
+
+  const handleAccept = async () => {
+    const response = await fetch(
+      `http://localhost:3000/api/cuestionario/${candidato}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        // body: JSON.stringify(data),
+      }
+    );
+    const res = await response.json();
+    console.log(res);
     router.push("/cuestionario/contestar")
   }
   return (

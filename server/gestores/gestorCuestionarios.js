@@ -85,14 +85,14 @@ export async function getCuestionario(req, res) {
 
 export async function inicializarCuestionario(req, res) {
   try {
-    const candidato = req.session.usuario;
+    const candidato = req.params.nroCandidato;
     if(candidato == null)return res.json({msg: "acceso invalido, por favor autenticarse."});
     
     const cuestionarioDAO = new CuestionarioDAO;
     const puestoDAO = new PuestoDAO;
     const preguntaDAO = new PreguntaDAO;
 
-    const cuestionario = await cuestionarioDAO.getCuestionario(candidato.nroCandidato);
+    const cuestionario = await cuestionarioDAO.getCuestionario(candidato);
     
     const puesto = await puestoDAO.getPuestoClon(cuestionario.evaluacion.puesto.id);
     const ponderaciones = puesto.ponderaciones;

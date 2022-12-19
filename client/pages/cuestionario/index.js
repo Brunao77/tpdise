@@ -36,7 +36,10 @@ const Cuestionario = () => {
       pathname: "/cuestionario/error",
       query: { msg: JSON.stringify(res.err) },
     });
-    if (res.estado == "activo") router.push("/cuestionario/instrucciones");
+    if (res.estado == "activo") router.push({
+      pathname: "/cuestionario/instrucciones",
+      query: { candidato: candidato.nroCandidato },
+    });
     if (res.estado == "enProceso") router.push("/cuestionario/instrucciones");
   } 
 

@@ -4,6 +4,6 @@ import { getCuestionario, inicializarCuestionario } from "../gestores/gestorCues
 const router = Router();
 
 router.get("/:nroCandidato", getCuestionario);
-router.post("/", inicializarCuestionario);
+router.post("/:nroCandidato", inicializarCuestionario);
 
 export default router;
