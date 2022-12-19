@@ -3,7 +3,7 @@ import { getCuestionario, inicializarCuestionario } from "../gestores/gestorCues
 
 const router = Router();
 
-router.get("/", getCuestionario);
+router.get("/:nroCandidato", getCuestionario);
 router.post("/", inicializarCuestionario);
 
 export default router;

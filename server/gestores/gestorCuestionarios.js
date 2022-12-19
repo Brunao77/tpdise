@@ -43,11 +43,11 @@ export async function crearCuestionario(candidato, clave) {
 
 export async function getCuestionario(req, res) {
   try {
-    const candidato = req.session.usuario;
-    if(candidato == null)return res.json({msg: "acceso invalido, por favor autenticarse."});
+    const candidato = req.params.nroCandidato;
+    if(candidato == null)return res.json({err: "acceso invalido, por favor autenticarse."});
     
     const cuestionarioDAO = new CuestionarioDAO;
-    const cuestionario = await cuestionarioDAO.getCuestionario(candidato.nroCandidato);
+    const cuestionario = await cuestionarioDAO.getCuestionario(candidato);
 
     //el cuestionario puede estar 1 mes activo antes de ser marcado como sinContestar
     if(cuestionario.estado == "activo" && cuestionario.fechaFin <= Date.now()){
@@ -57,7 +57,7 @@ export async function getCuestionario(req, res) {
       //se cierra la sesion del candidato (ya no tiene cuestionarios)
       req.session.isLoggedIn = false;
       req.session.usuario = undefined;
-      return res.json({msg: "tiempo maximo activo"});
+      return res.json({err: "tiempo maximo activo"});
     }
     //el cuestionario puede estar 15 dias enProceso antes de ser marcado como incompleto
     else if(cuestionario.estado == "enProceso"){
@@ -69,7 +69,7 @@ export async function getCuestionario(req, res) {
         //se cierra la sesion del candidato (ya no tiene cuestionarios)
         req.session.isLoggedIn = false;
         req.session.usuario = undefined;
-        return res.json({msg: "tiempo maximo enProceso"});  
+        return res.json({err: "tiempo maximo enProceso"});  
       }
       else {
         const bloque = recuperarCuestionario(cuestionario);
@@ -77,7 +77,7 @@ export async function getCuestionario(req, res) {
       }
     }
 
-    res.json({msj: "mostrar instrucciones", cuestionario});
+    res.json({estado: "activo", cuestionario});
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }
@@ -155,5 +155,5 @@ function recuperarCuestionario(cuestionario) {
   // const cuestionarioDAO = new CuestionarioDAO;
   // console.log(cuestionario.id);
   // return await cuestionarioDAO.getBloque(cuestionario.id);
-  return {msg: "el Cuestionario esta en proceso"}
+  return {estado: "enProceso", msg: "el Cuestionario esta en proceso"}
 }
